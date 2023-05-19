@@ -1,14 +1,21 @@
-import '../styles/Banner.css'
-import logo from '../assets/icon-left-font.png'
+import "../styles/Banner.css";
+import logo from "../assets/icon-left-font-monochrome-black.png";
 
 function Banner() {
-    const title = 'Jungle House'
-    return (
-        <div className='gm-banner'>
-            <img src={logo} alt='Jungle House' className='gm-logo' />
-            <h1 className='jh-title'>{title}</h1>
-        </div>
-    )
+  return (
+    <div className="gm-banner">
+      <img src={logo} alt="Jungle House" className="gm-logo" />
+      <div class="right-nav">
+        <ul>
+          <li>
+            <a>SIGN UP</a>
+          </li>
+          <li>
+            <a>LOGIN</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
 }
- 
-export default Banner
+export default Banner;
