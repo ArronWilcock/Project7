@@ -1,0 +1,28 @@
+.gm-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  height: 150px;
+  color: black;
+  padding: 0 32px;
+  border-bottom: solid 3px black;
+}
+.gm-logo {
+    height: 100px;
+}
+.right-nav {
+    display: flex;
+}
+.right-nav>ul>li>a {
+    text-decoration: none;
+    
+}
+.right-nav>ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+}
+.right-nav>ul>li{
+    padding: 0 10px;
+}
