@@ -1,6 +1,6 @@
 {
-  "short_name": "Groupomania",
-  "name": "Groupomania App Sample",
+  "short_name": "my-app",
+  "name": "my react-app",
   "icons": [
     {
       "src": "icon.svg",

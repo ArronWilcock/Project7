@@ -1,7 +1,8 @@
-import "../styles/Banner.scss";
-import logo from "../assets/icon-left-font.svg";
+import "./Banner.scss";
+import logo from "./src/images.icon-left-font.svg"
 
 function Banner() {
+  
   return (
     <div className="gm-banner">
       <img src={logo} alt="Groupomania Logo" className="gm-logo" />
