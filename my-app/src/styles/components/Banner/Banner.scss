@@ -1,3 +1,6 @@
+@import '../../utils/variables';
+@import '../../utils/mixins';
+
 .gm-banner {
   display: flex;
   justify-content: space-between;
@@ -7,30 +10,67 @@
   color: black;
   padding: 0 32px;
   border-bottom: solid 3px black;
+
+  @include mobile {
+    height: auto;
+    flex-direction: column;
+  }
 }
 .gm-logo {
-    height: 500px;
-    z-index: -1;
+  height: 500px;
+  z-index: -1;
+
+  @include mobile{
+    height: 250px;
+    content: url('/images/icon-above-font.svg');
+    margin: -30px;
+  }
 }
 .right-nav {
+  display: flex;
+  height: 100%;
+
+  & > ul > li > a {
     display: flex;
-    align-items: stretch;
-}
-.right-nav>ul>li>a {
+    align-self: center;
     text-decoration: none;
     color: #000;
     font-size: 18px;
     font-weight: 600;
-    
-}
-.right-nav>ul {
+  }
+  & > ul {
     display: flex;
-    align-items: stretch;
     list-style: none;
+    margin: 0;
+
+    @include mobile{
+      width: 100%;
+      justify-content: space-around;
+    }
+  }
+  & > ul > li {
     display: flex;
-    justify-content: space-between;
-}
-.right-nav>ul>li{
-    padding: 0 10px;
-    
+    padding: 10px;
+    border-top-style: solid;
+    border-top-width: 2px;
+    border-top-color: #fff;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-bottom-color: #fff;
+
+    @include desktop {
+      &:hover {
+        border-top-color: red;
+      }
+    }
+    @include mobile {
+      &:hover {
+        border-top-color: red;
+      }
+    }
+  }
+  @include mobile{
+    width: 100%;
+    padding: 10px;
+  }
 }
