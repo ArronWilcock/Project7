@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import "./Login.scss"
+import React, { useState } from "react";
+import "./Login.scss";
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -16,8 +16,8 @@ function LoginForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Perform login logic here with email and password values
-    console.log('Email:', email);
-    console.log('Password:', password);
+    console.log("Email:", email);
+    console.log("Password:", password);
   };
 
   return (
@@ -29,7 +29,11 @@ function LoginForm() {
       <br />
       <label>
         Password
-        <input type="password" value={password} onChange={handlePasswordChange} />
+        <input
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
+        />
       </label>
       <br />
       <button type="submit">Login</button>

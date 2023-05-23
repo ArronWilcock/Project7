@@ -1,5 +1,5 @@
-@import '../../utils/variables';
-@import '../../utils/mixins';
+@import "../../utils/variables";
+@import "../../utils/mixins";
 
 .gm-banner {
   display: flex;
@@ -20,9 +20,9 @@
   height: 500px;
   z-index: -1;
 
-  @include mobile{
+  @include mobile {
     height: 250px;
-    content: url('/images/icon-above-font.svg');
+    content: url("/images/icon-above-font.svg");
     margin: -30px;
   }
 }
@@ -43,7 +43,7 @@
     list-style: none;
     margin: 0;
 
-    @include mobile{
+    @include mobile {
       width: 100%;
       justify-content: space-around;
     }
@@ -69,7 +69,7 @@
       }
     }
   }
-  @include mobile{
+  @include mobile {
     width: 100%;
     padding: 10px;
   }

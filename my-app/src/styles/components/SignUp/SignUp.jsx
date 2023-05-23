@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import "./SignUp.scss"
+import React, { useState } from "react";
+import "./SignUp.scss";
 
 function SignupForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -16,8 +16,8 @@ function SignupForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Perform signup logic here with email and password values
-    console.log('Email:', email);
-    console.log('Password:', password);
+    console.log("Email:", email);
+    console.log("Password:", password);
   };
 
   return (
@@ -29,7 +29,11 @@ function SignupForm() {
       <br />
       <label>
         Password:
-        <input type="password" value={password} onChange={handlePasswordChange} />
+        <input
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
+        />
       </label>
       <br />
       <button type="submit">Sign Up</button>
