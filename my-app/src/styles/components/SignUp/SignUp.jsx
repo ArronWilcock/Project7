@@ -1,44 +1,51 @@
 import React, { useState } from "react";
 import "./SignUp.scss";
 
-function SignupForm() {
+function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    updateFormCompletion();
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    updateFormCompletion();
+  };
+
+  const updateFormCompletion = () => {
+    setIsFormComplete(email !== "" && password !== "");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Perform signup logic here with email and password values
-    console.log("Email:", email);
-    console.log("Password:", password);
+    // Perform sign up logic
+    console.log('Email:', email);
+    console.log('Password:', password);
   };
 
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
-      <label>
-        Email Address:
-        <input type="email" value={email} onChange={handleEmailChange} />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-      </label>
-      <br />
-      <button type="submit">Sign Up</button>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={handleEmailChange}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={handlePasswordChange}
+      />
+      <button type="submit" disabled={!isFormComplete}>
+        Sign Up
+      </button>
     </form>
   );
 }
 
-export default SignupForm;
+export default SignUpForm;

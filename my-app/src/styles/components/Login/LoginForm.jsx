@@ -4,39 +4,46 @@ import "./Login.scss";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    updateFormCompletion();
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    updateFormCompletion();
+  };
+
+  const updateFormCompletion = () => {
+    setIsFormComplete(email !== "" && password !== "");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Perform login logic here with email and password values
-    console.log("Email:", email);
-    console.log("Password:", password);
+    // Perform login logic
+    console.log('Email:', email);
+    console.log('Password:', password);
   };
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
-      <label>
-        Email
-        <input type="email" value={email} onChange={handleEmailChange} />
-      </label>
-      <br />
-      <label>
-        Password
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-      </label>
-      <br />
-      <button type="submit">Login</button>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={handleEmailChange}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={handlePasswordChange}
+      />
+      <button type="submit" disabled={!isFormComplete}>
+        Login
+      </button>
     </form>
   );
 }
