@@ -1,6 +1,6 @@
 // Required packages and file paths declared
 const express = require("express");
-const axios = require("axios");
+const db = require("./models")
 
 // express app is declared by using express like a function
 const app = express();
