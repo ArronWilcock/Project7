@@ -1,5 +1,3 @@
-"use strict";
-
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
@@ -16,16 +14,18 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(
-    database,
-    username,
-    password,
-    config
-  );
+  sequelize = new Sequelize(database, username, password, config);
 }
+
 if ("development" === env) {
-  sequelize.sync({ alter: true });
-  console.log("All tables are up to date");
+  sequelize
+    .sync({ alter: true })
+    .then(() => {
+      console.log("All tables are up to date");
+    })
+    .catch((error) => {
+      console.error("Failed to sync database:", error);
+    });
 }
 
 fs.readdirSync(__dirname)
@@ -50,6 +50,7 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db);
   }
 });
+
 async function testDatabaseConnection() {
   try {
     await sequelize.authenticate();
@@ -61,7 +62,9 @@ async function testDatabaseConnection() {
 
 testDatabaseConnection();
 
+// Add the sequelize instance and Sequelize to the exported object
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// Export the database object
 module.exports = db;
