@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 import "./SignUp.scss";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
+
 
 function SignUpForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFirstNameChange = (event) => {
-    setFirstName(event.target.value);
-    updateFormCompletion();
-  };
 
-  const handleLastNameChange = (event) => {
-    setLastName(event.target.value);
-    updateFormCompletion();
-  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -29,36 +24,32 @@ function SignUpForm() {
   };
 
   const updateFormCompletion = () => {
-    setIsFormComplete(
-      firstName !== "" && lastName !== "" && email !== "" && password !== ""
-    );
+    setIsFormComplete(email !== "" && password !== "");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Perform sign up logic
-    console.log("First Name:", firstName);
-    console.log("Last Name:", lastName);
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    const formData = {
+      email: email,
+      password: password,
+    };
+
+    axios
+      .post("http://localhost:3000/api/auth/signup", formData)
+      .then((response) => {
+        // Handle successful sign-up
+        console.log("Sign up successful:", response.data);
+        navigate('/');
+      })
+      .catch((error) => {
+        // Handle sign-up error
+        console.error("Sign up error:", error);
+      });
   };
 
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="First Name"
-        value={firstName}
-        onChange={handleFirstNameChange}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Last Name"
-        value={lastName}
-        onChange={handleLastNameChange}
-        required
-      />
       <input
         type="email"
         placeholder="Email"

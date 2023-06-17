@@ -1,6 +1,6 @@
-@import "../../utils/variables";
-@import "../../utils/mixins";
-.login-form {
+@import "../../styles/utils/variables";
+@import "../../styles/utils/mixins";
+.signup-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,8 +19,7 @@
     justify-content: flex-start;
   }
 
-  input[type="email"],
-  input[type="password"] {
+  input{
     width: 50%;
     padding: 5px;
     margin-top: 5px;

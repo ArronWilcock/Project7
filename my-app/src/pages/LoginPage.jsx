@@ -2,11 +2,11 @@ import React from "react";
 import LoginForm from "../components/Login/LoginForm";
 import Banner from "../components/Banner/Banner";
 
-function LoginPage() {
+function LoginPage({ setLoginState }) {
   return (
     <div>
       <Banner />
-      <LoginForm />
+      <LoginForm setLoginState={setLoginState} />
     </div>
   );
 }
