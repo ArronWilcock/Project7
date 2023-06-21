@@ -1,11 +1,14 @@
 // Required packages and file paths declared
 const express = require("express");
-const db = require("./models")
+const db = require("./models");
 
 // express app is declared by using express like a function
 const app = express();
 
+const path = require("path");
+
 const userRoutes = require("./routes/user");
+const postRoutes = require("./routes/post");
 
 // middleware that takes incoming requests with content type application/json and makes its body available on the reponse object
 app.use(express.json());
@@ -25,7 +28,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use("/api/auth", userRoutes);
+app.use("/api/posts", postRoutes);
 
 // express app exported so that it can be accessed outside the js file
 module.exports = app;
