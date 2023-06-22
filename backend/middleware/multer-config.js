@@ -19,6 +19,9 @@ const storage = multer.diskStorage({
     const extension = MIME_TYPES[file.mimetype];
     callback(null, name + Date.now() + "." + extension);
   },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5 MB in bytes
+  },
 });
 
 // Storage key configured for single image and exported
