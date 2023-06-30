@@ -62,8 +62,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.deleteAccount = (req, res, next) => {
-  const userId = req.auth.userId;
-  console.log(userId);
+  const userId = req.params.id;
 
   User.destroy({ where: { id: userId } })
     .then(() => {
@@ -73,7 +72,7 @@ exports.deleteAccount = (req, res, next) => {
     })
     .catch((error) => {
       res.status(500).json({
-        error: error,
+        error: error.message || error,
       });
     });
 };
