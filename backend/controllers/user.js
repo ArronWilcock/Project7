@@ -60,3 +60,20 @@ exports.login = (req, res, next) => {
       });
     });
 };
+
+exports.deleteAccount = (req, res, next) => {
+  const userId = req.auth.userId;
+  console.log(userId);
+
+  User.destroy({ where: { id: userId } })
+    .then(() => {
+      res.status(200).json({
+        message: "User account deleted successfully",
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        error: error,
+      });
+    });
+};

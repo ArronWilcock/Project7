@@ -1,31 +1,37 @@
 const { Post } = require("../models");
-const upload = require("../middleware/multer-config");
 
 exports.createPost = (req, res, next) => {
-  upload(req, res, function (err) {
-    if (err) {
-      // Handle multer errors, if any
-      res.status(400).json({
-        error: err,
-      });
-    } else {
-      const { caption } = req.body;
-      const url = req.protocol + "://" + req.get("host");
-      imgUrl = url + "/images/" + req.file.filename;
-      Post.create({ caption, imgUrl })
-        .then((post) => {
-          res.status(201).json({
-            message: "Post created successfully",
-            post: post,
-          });
-        })
-        .catch((error) => {
-          res.status(400).json({
-            error: error,
-          });
-        });
-    }
+  let post = null;
+  let parsedPost = null;
+  let imgUrl = null;
+  if (req.file) {
+    parsedPost = JSON.parse(req.body.post);
+    // logic to retrieve the entire url for the image file
+    const url = req.protocol + "://" + req.get("host");
+    imgUrl = url + "/images/" + req.file.filename;
+  } else {
+    parsedPost = req.body;
+  }
+  post = new Post({
+    caption: parsedPost.caption,
+    imgUrl,
+    likes: 0,
+    dislikes: 0,
+    usersLiked: [],
+    usersDisliked: [],
   });
+  post
+    .save()
+    .then(() => {
+      res.status(201).json({
+        message: "Post saved successfully!",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error.message || error,
+      });
+    });
 };
 
 exports.getAllPosts = (req, res, next) => {

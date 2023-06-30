@@ -34,13 +34,14 @@ function LoginForm({ setLoginState }) {
     axios
       .post("http://localhost:3000/api/auth/login", formData)
       .then((response) => {
-        // Handle successful sign-up
+        // Handle successful sign-in
         console.log("Login successful:", response.data);
+        localStorage.setItem("userInfo", JSON.stringify(response.data));
         setLoginState(true); // Update the login state
         navigate("/");
       })
       .catch((error) => {
-        // Handle sign-up error
+        // Handle sign-in error
         console.error("Login error:", error);
       });
   };

@@ -1,14 +1,15 @@
 import React from "react";
 import Banner from "../components/Banner/Banner";
-import CreatePostBtn from "../components/CreatePostBtn/CreatePostBtn";
+import CreatePostForm from "../components/Post/CreatePostForm";
+import Posts from "../components/Post/Posts";
 
-function LoginPage() {
+function HomePage() {
   return (
     <div>
       <Banner />
-      <CreatePostBtn />
+      <Posts />
     </div>
   );
 }
 
-export default LoginPage;
+export default HomePage;
