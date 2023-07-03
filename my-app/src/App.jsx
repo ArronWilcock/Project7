@@ -9,6 +9,7 @@ import HomePage from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import AccountPage from "./pages/Account";
+import CreatePost from "./pages/CreatePost";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
@@ -46,6 +47,7 @@ function App() {
           element={isLoggedIn ? <HomePage /> : <Navigate to="/login" />}
         />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/create-post" element={<CreatePost />} />
       </Routes>
     </Router>
   );

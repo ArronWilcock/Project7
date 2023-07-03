@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./CreatePostForm.scss";
 
 function CreatePostForm() {
   const [caption, setCaption] = useState("");
@@ -53,13 +54,14 @@ function CreatePostForm() {
   return (
     <form className="create-post" onSubmit={handleSubmit}>
       <input
+        className="create-post__caption"
         type="text"
         placeholder="Caption"
         value={caption}
         onChange={handleCaptionChange}
       />
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      <button type="submit" disabled={!isFormComplete}>
+      <input className="create-post__upload" type="file" accept="image/*" onChange={handleImageChange} />
+      <button className="create-post__submitbtn" type="submit" disabled={!isFormComplete}>
         Post
       </button>
     </form>

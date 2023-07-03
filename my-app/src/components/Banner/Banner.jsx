@@ -8,13 +8,14 @@ function Banner() {
 
   const isHomePage = location.pathname === "/";
   const isAccountPage = location.pathname === "/account";
+  const isCreatePost = location.pathname === "/create-post";
 
   return (
     <div className="gm-banner">
       <img src={Logo} alt="Groupomania Logo" className="gm-logo" />
       <div className="right-nav">
         <ul>
-          {!isHomePage && !isAccountPage && (
+          {!isHomePage && !isAccountPage && !isCreatePost && (
             <>
               <li>
                 <Link to="/login" className="nav-link">
@@ -29,18 +30,46 @@ function Banner() {
             </>
           )}
           {isHomePage && (
-            <li>
-              <Link to="/account" className="nav-link">
-                ACCOUNT
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/create-post" className="nav-link">
+                  POST
+                </Link>
+              </li>
+              <li>
+                <Link to="/account" className="nav-link">
+                  ACCOUNT
+                </Link>
+              </li>
+            </>
           )}
           {isAccountPage && (
-            <li>
-              <Link to="/" className="nav-link">
-                HOME
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/create-post" className="nav-link">
+                  POST
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="nav-link">
+                  HOME
+                </Link>
+              </li>
+            </>
+          )}
+          {isCreatePost && (
+            <>
+              <li>
+                <Link to="/account" className="nav-link">
+                  ACCOUNT
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="nav-link">
+                  HOME
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>
