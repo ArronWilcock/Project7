@@ -23,8 +23,8 @@ function PostList() {
           <h2 className="post__caption">{post.caption}</h2>
           <img src={post.imgUrl} alt="Post" className="post__image" />
           <div className="post__likes-container">
-          <p className="post__likes">Likes: {post.likes}</p>
-          <p className="post__dislikes">Dislikes: {post.dislikes}</p>
+          <p className="post__likes"><i class="fa-solid fa-thumbs-up"></i> {post.likes}</p>
+          <p className="post__dislikes"><i class="fa-solid fa-thumbs-down"></i> {post.dislikes}</p>
           </div>
           {/* Render other post details */}
         </div>

@@ -8,6 +8,9 @@ import {
 import HomePage from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import AccountPage from "./pages/Account";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +45,7 @@ function App() {
           path="/"
           element={isLoggedIn ? <HomePage /> : <Navigate to="/login" />}
         />
+        <Route path="/account" element={<AccountPage />} />
       </Routes>
     </Router>
   );
