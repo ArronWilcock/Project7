@@ -1,0 +1,8 @@
+@import "../../styles/utils/variables";
+@import "../../styles/utils/mixins";
+
+.account-container{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+}

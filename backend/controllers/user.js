@@ -61,6 +61,29 @@ exports.login = (req, res, next) => {
     });
 };
 
+
+exports.logout = (req, res, next) => {
+  // Extract the token from the request headers, query parameters, or cookies
+  const token = req.headers.authorization.split(" ")[1]; // Assuming token is sent in the "Authorization" header
+
+  // You can add additional checks or validations here if needed
+
+  // Invalidate the token by adding it to a blacklist or revoking its access
+
+  // For example, you can store the token in a database table or cache with a TTL (time-to-live) or expiration time
+
+  // Implement your logic to store the invalidated token
+  // For simplicity, let's assume you have a BlacklistedToken model with a "token" field to store the invalidated tokens
+  BlacklistedToken.create({ token: token })
+    .then(() => {
+      res.status(200).json({ message: "Logout successful" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error });
+    });
+};
+
+
 exports.deleteAccount = (req, res, next) => {
   const userId = req.params.id;
 

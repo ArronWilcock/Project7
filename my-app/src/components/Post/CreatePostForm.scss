@@ -15,6 +15,16 @@
         align-self: center;
     }
 
+    &__image-preview{
+        height: 500px;
+        object-fit: contain;
+    }
+
+    &__caption{
+        padding: 10px;
+        border-radius: 5px;
+    }
+
     &__submitbtn{
         align-self: center;
         border: 1px solid black;

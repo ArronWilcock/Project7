@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./Login.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { store, actions } from "../../store";
 
 function LoginForm({ setLoginState }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
+  const { dispatch } = useContext(store);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -36,7 +38,7 @@ function LoginForm({ setLoginState }) {
       .then((response) => {
         // Handle successful sign-in
         console.log("Login successful:", response.data);
-        localStorage.setItem("userInfo", JSON.stringify(response.data));
+        dispatch({ type: actions.SET_USER_INFO, value: response.data });
         setLoginState(true); // Update the login state
         navigate("/");
       })
