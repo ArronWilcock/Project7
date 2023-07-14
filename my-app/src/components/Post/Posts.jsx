@@ -1,36 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import "./Posts.scss"
-
+import React, { useState, useEffect, useContext } from "react";
+import { store } from "../../store";
+import "./Posts.scss";
 
 function PostList() {
   const [posts, setPosts] = useState([]);
+  const token = useContext(store).state.userInfo.token;
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("userInfo")).token;
-    fetch('http://localhost:3000/api/posts', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-    
-      .then(response => response.json())
-      .then(data => setPosts(data.posts))
-      .catch(error => console.error(error));
-  }, []);
+    fetch("http://localhost:3000/api/posts", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((data) => setPosts(data.posts))
+      .catch((error) => console.error(error));
+  }, [token]);
+
+  const renderMedia = (post) => {
+    if (post.imgUrl) {
+      if (post.imgUrl.endsWith(".mp3")) {
+        return <audio src={post.imgUrl} controls className="post__media" />;
+      } else if (post.imgUrl.endsWith(".mp4")) {
+        return <video src={post.imgUrl} controls className="post__media" />;
+      } else {
+        return <img src={post.imgUrl} alt="Post" className="post__media" />;
+      }
+    } else {
+      return null; // No media file, return null
+    }
+  };
 
   return (
     <div className="post-list">
-      {posts.map(post => (
-        <div key={post.id} className="post">
-          <h2 className="post__caption">{post.caption}</h2>
-          <img src={post.imgUrl} alt="Post" className="post__image" />
-          <div className="post__likes-container">
-          <p className="post__likes"><i class="fa-solid fa-thumbs-up"></i> {post.likes}</p>
-          <p className="post__dislikes"><i class="fa-solid fa-thumbs-down"></i> {post.dislikes}</p>
+      {posts.map((post) => (
+        <a href={`/${post.id}`} key={post.id} className="post__tag">
+          <div className="post">
+            <h2 className="post__caption">{post.caption}</h2>
+            {renderMedia(post)}
+            <div className="post__likes-container">
+              <p className="post__likes">
+                <i className="fa-solid fa-thumbs-up"></i> {post.likes}
+              </p>
+              <p className="post__dislikes">
+                <i className="fa-solid fa-thumbs-down"></i> {post.dislikes}
+              </p>
+            </div>
+            {/* Render other post details */}
           </div>
-          {/* Render other post details */}
-        </div>
+        </a>
       ))}
     </div>
   );
+  
 }
 
 export default PostList;

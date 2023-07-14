@@ -9,6 +9,7 @@ function Container({ setLoginState }) {
   const { dispatch } = useContext(store);
   const navigate = useNavigate();
   const userId = useContext(store).state.userInfo.userId;
+  const token = useContext(store).state.userInfo.token;
 
   const handleLogout = () => {
     // Perform any necessary cleanup or API requests for logout
@@ -24,11 +25,12 @@ function Container({ setLoginState }) {
     event.preventDefault();
 
     axios
-      .post(`"http://localhost:3000/api/auth/${userId}"`)
+      .delete(`http://localhost:3000/api/auth/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
-        // Handle successful sign-in
         console.log("Account removed successfully:");
-        setLoginState(false); // Update the login state
+        dispatch({ type: actions.SET_LOGIN_STATE, value: true });
         navigate("/login");
       })
       .catch((error) => {

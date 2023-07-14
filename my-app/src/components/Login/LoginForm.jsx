@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { store, actions } from "../../store";
 
 function LoginForm({ setLoginState }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("arron.wilcock@outlook.com");
+  const [password, setPassword] = useState("1234");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useContext(store);
@@ -39,7 +39,7 @@ function LoginForm({ setLoginState }) {
         // Handle successful sign-in
         console.log("Login successful:", response.data);
         dispatch({ type: actions.SET_USER_INFO, value: response.data });
-        setLoginState(true); // Update the login state
+        dispatch({ type: actions.SET_LOGIN_STATE, value: true });
         navigate("/");
       })
       .catch((error) => {

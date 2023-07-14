@@ -17,11 +17,12 @@
 
     }
 
-    &__image{
-        
+    &__media{
+        display: flex;
+        align-self: center;
         margin: 10px 0;
         object-fit: contain;
-        height: 500px;
+        max-height: 500px;
     }
 
     &__likes-container{

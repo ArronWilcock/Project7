@@ -6,7 +6,7 @@ const Options = ({ title, buttonText, onClick }) => {
   return (
     <div className="option-container">
       <h2 className="option-container__title">{title}</h2>
-      <button className="option-container__btn" onClick={onClick}>
+      <button type ="submit" className="option-container__btn" onClick={onClick}>
         {buttonText}
       </button>
     </div>

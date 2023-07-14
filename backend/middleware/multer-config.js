@@ -5,7 +5,9 @@ const MIME_TYPES = {
   "image/jpg": "jpg",
   "image/jpeg": "jpg",
   "image/png": "png",
-  "image/gif": "gif", // Add the MIME type for GIF files and map it to the "gif" extension
+  "image/gif": "gif",
+  "audio/mpeg": "mp3",
+  "video/mp4": "mp4",
 };
 
 // Image file storage declared with multer. This uses the destination function to send the file to the images folder
@@ -25,4 +27,4 @@ const storage = multer.diskStorage({
 });
 
 // Storage key configured for single image and exported
-module.exports = multer({ storage: storage }).single("image");
+module.exports = multer({ storage: storage }).single("media");

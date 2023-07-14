@@ -6,8 +6,8 @@ import "./CreatePostForm.scss";
 
 function CreatePostForm() {
   const [caption, setCaption] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
   const token = useContext(store).state.userInfo.token;
@@ -17,23 +17,30 @@ function CreatePostForm() {
     updateFormCompletion();
   };
 
-  const handleImageChange = (event) => {
-    const selectedImage = event.target.files[0];
-    setImage(selectedImage);
-    updateImagePreview(selectedImage);
+  const handleMediaChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setMediaFile(selectedFile);
+    updateMediaPreview(selectedFile);
     updateFormCompletion();
   };
 
-  const updateImagePreview = (selectedImage) => {
+  const updateMediaPreview = (selectedFile) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+      setMediaPreview(reader.result);
     };
-    reader.readAsDataURL(selectedImage);
+
+    if (selectedFile.type.startsWith("image/")) {
+      reader.readAsDataURL(selectedFile);
+    } else if (selectedFile.type.startsWith("video/")) {
+      reader.readAsDataURL(selectedFile);
+    } else if (selectedFile.type.startsWith("audio/")) {
+      reader.readAsDataURL(selectedFile);
+    }
   };
 
   const updateFormCompletion = () => {
-    setIsFormComplete(caption !== "" && image !== null);
+    setIsFormComplete(caption !== "" && mediaFile !== null);
   };
 
   const handleSubmit = async (event) => {
@@ -41,9 +48,11 @@ function CreatePostForm() {
 
     try {
       // Check if the user is authorized using the token from Redux store
+
+      // TODO check if user has uploaded file. If not don't use formData, use JSON
       const formData = new FormData();
-      formData.append("caption", caption);
-      formData.append("image", image);
+      formData.append("post", JSON.stringify({ caption }));
+      formData.append("media", mediaFile);
 
       const response = await axios.post(
         "http://localhost:3000/api/posts",
@@ -72,20 +81,33 @@ function CreatePostForm() {
       <input
         className="create-post__upload"
         type="file"
-        accept="image/*"
-        onChange={handleImageChange}
+        accept="image/*,video/*,audio/*"
+        onChange={handleMediaChange}
       />
-      {imagePreview && (
-        <img
-          className="create-post__image-preview"
-          src={imagePreview}
-          alt="Preview"
-        />
+      {mediaPreview && (
+        <>
+          {mediaFile.type.startsWith("image/") && (
+            <img
+              className="create-post__media-preview"
+              src={mediaPreview}
+              alt="Preview"
+            />
+          )}
+          {mediaFile.type.startsWith("video/") && (
+            <video controls className="create-post__media-preview">
+              <source src={mediaPreview} type={mediaFile.type} />
+            </video>
+          )}
+          {mediaFile.type.startsWith("audio/") && (
+            <audio controls className="create-post__media-preview">
+              <source src={mediaPreview} type={mediaFile.type} />
+            </audio>
+          )}
+        </>
       )}
       <button
         className="create-post__submitbtn"
         type="submit"
-        disabled={!isFormComplete}
       >
         Post
       </button>
