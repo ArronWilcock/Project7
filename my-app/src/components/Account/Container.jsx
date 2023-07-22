@@ -16,6 +16,7 @@ function Container({ setLoginState }) {
 
     // Reset the user information in the store
     dispatch({ type: actions.SET_USER_INFO, value: null });
+    dispatch({ type: actions.SET_LOGIN_STATE, value: false });
 
     // Navigate to the login or home page (whichever is appropriate for your app)
     navigate("/login"); // Replace "/login" with your desired route

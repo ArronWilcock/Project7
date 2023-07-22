@@ -10,7 +10,8 @@ function CreatePostForm() {
   const [mediaPreview, setMediaPreview] = useState(null);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
-  const token = useContext(store).state.userInfo.token;
+  const {token, userId} = useContext(store).state.userInfo;
+  
 
   const handleCaptionChange = (event) => {
     setCaption(event.target.value);
@@ -51,7 +52,7 @@ function CreatePostForm() {
 
       // TODO check if user has uploaded file. If not don't use formData, use JSON
       const formData = new FormData();
-      formData.append("post", JSON.stringify({ caption }));
+      formData.append("post", JSON.stringify({ caption, userId }));
       formData.append("media", mediaFile);
 
       const response = await axios.post(

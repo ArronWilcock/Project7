@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { store } from "../../store";
+import axios from "axios"
 import "./Posts.scss";
 import { useParams } from "react-router-dom";
 
@@ -9,12 +10,16 @@ function SinglePost() {
   const { postId } = useParams();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/posts/${postId}`, {
+    axios.get(`http://localhost:3000/api/posts/${postId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
-      .then((data) => setPost(data))
-      .catch((error) => console.error(error));
+      .then((response) => {
+        const data = response.data;
+        setPost(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [postId, token]);
 
   const renderMedia = (post) => {

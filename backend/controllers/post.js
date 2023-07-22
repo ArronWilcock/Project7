@@ -6,7 +6,7 @@ exports.createPost = (req, res, next) => {
   let imgUrl = null;
   if (req.file) {
     parsedPost = JSON.parse(req.body.post);
-    // logic to retrieve the entire url for the image file
+    // logic to retrieve the entire URL for the image file
     const url = req.protocol + "://" + req.get("host");
     imgUrl = url + "/images/" + req.file.filename;
   } else {
@@ -17,8 +17,7 @@ exports.createPost = (req, res, next) => {
     imgUrl,
     likes: 0,
     dislikes: 0,
-    usersLiked: [],
-    usersDisliked: [],
+    UserId: parsedPost.userId,
   });
   post
     .save()
@@ -50,7 +49,7 @@ exports.getAllPosts = (req, res, next) => {
 
 exports.getOnePost = (req, res, next) => {
   Post.findOne({
-    id: req.params.id,
+    where: { id: req.params.id }, // Use where clause to specify the post ID
   })
     .then((post) => {
       res.status(200).json(post);

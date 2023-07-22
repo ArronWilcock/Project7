@@ -7,13 +7,23 @@ import { store, actions } from "../../store"
 
 
 function SignUpForm() {
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setlastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useContext(store);
 
+  const handlefirstNameChange = (event) => {
+    setfirstName(event.target.value);
+    updateFormCompletion();
+  };
 
+  const handlelastNameChange = (event) => {
+    setlastName(event.target.value);
+    updateFormCompletion();
+  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -33,6 +43,8 @@ function SignUpForm() {
     event.preventDefault();
 
     const formData = {
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: password,
     };
@@ -43,7 +55,7 @@ function SignUpForm() {
         // Handle successful sign-up
         console.log("Sign up successful:", response.data);
         dispatch({ type: actions.SET_USER_INFO, value: response.data });
-        navigate('/');
+        navigate('/login');
       })
       .catch((error) => {
         // Handle sign-up error
@@ -53,6 +65,20 @@ function SignUpForm() {
 
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
+      <input
+        type="firstName"
+        placeholder="First Name"
+        value={firstName}
+        onChange={handlefirstNameChange}
+        required
+      />
+      <input
+        type="lastName"
+        placeholder="Last Name"
+        value={lastName}
+        onChange={handlelastNameChange}
+        required
+      />
       <input
         type="email"
         placeholder="Email"

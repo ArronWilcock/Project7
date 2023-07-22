@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
 import { store } from "../../store";
+import axios from "axios";
 import "./Posts.scss";
+import { Link } from "react-router-dom";
 
 function PostList() {
   const [posts, setPosts] = useState([]);
   const token = useContext(store).state.userInfo.token;
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/posts", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => response.json())
-      .then((data) => setPosts(data.posts))
-      .catch((error) => console.error(error));
+    axios
+      .get("http://localhost:3000/api/posts", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const data = response.data;
+        setPosts(data.posts);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [token]);
 
   const renderMedia = (post) => {
@@ -32,7 +39,7 @@ function PostList() {
   return (
     <div className="post-list">
       {posts.map((post) => (
-        <a href={`/${post.id}`} key={post.id} className="post__tag">
+        <Link to={`/${post.id}`} key={post.id} className="post__tag">
           <div className="post">
             <h2 className="post__caption">{post.caption}</h2>
             {renderMedia(post)}
@@ -46,11 +53,10 @@ function PostList() {
             </div>
             {/* Render other post details */}
           </div>
-        </a>
+        </Link>
       ))}
     </div>
   );
-  
 }
 
 export default PostList;
