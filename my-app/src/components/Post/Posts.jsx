@@ -45,10 +45,10 @@ function PostList() {
             {renderMedia(post)}
             <div className="post__likes-container">
               <p className="post__likes">
-                <i className="fa-solid fa-thumbs-up"></i> {post.likes}
+                <i className="fa-solid fa-thumbs-up post__like"></i> {post.likes}
               </p>
               <p className="post__dislikes">
-                <i className="fa-solid fa-thumbs-down"></i> {post.dislikes}
+                <i className="fa-solid fa-thumbs-down post__dislike"></i> {post.dislikes}
               </p>
             </div>
             {/* Render other post details */}

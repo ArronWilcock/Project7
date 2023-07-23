@@ -9,13 +9,14 @@ function Banner() {
   const isHomePage = location.pathname === "/";
   const isAccountPage = location.pathname === "/account";
   const isCreatePost = location.pathname === "/create-post";
+  const isSinglePost = location.pathname.match(/^\/\d{1,}$/);
 
   return (
     <div className="gm-banner">
       <img src={Logo} alt="Groupomania Logo" className="gm-logo" />
       <div className="right-nav">
         <ul>
-          {!isHomePage && !isAccountPage && !isCreatePost && (
+          {!isHomePage && !isAccountPage && !isCreatePost && !isSinglePost && (
             <>
               <li>
                 <Link to="/login" className="nav-link">
@@ -58,6 +59,20 @@ function Banner() {
             </>
           )}
           {isCreatePost && (
+            <>
+              <li>
+                <Link to="/account" className="nav-link">
+                  ACCOUNT
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="nav-link">
+                  HOME
+                </Link>
+              </li>
+            </>
+          )}
+          {isSinglePost && (
             <>
               <li>
                 <Link to="/account" className="nav-link">
