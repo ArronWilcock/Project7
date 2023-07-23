@@ -53,6 +53,7 @@ exports.getAllPosts = (req, res, next) => {
 exports.getOnePost = (req, res, next) => {
   Post.findOne({
     where: { id: req.params.id }, // Use where clause to specify the post ID
+    include: [{ model: User, attributes: ["firstName", "lastName"] }],
   })
     .then((post) => {
       res.status(200).json(post);
