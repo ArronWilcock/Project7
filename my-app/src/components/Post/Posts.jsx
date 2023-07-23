@@ -39,21 +39,22 @@ function PostList() {
   return (
     <div className="post-list">
       {posts.map((post) => (
-        <Link to={`/${post.id}`} key={post.id} className="post__tag">
-          <div className="post">
-            <h2 className="post__caption">{post.caption}</h2>
-            {renderMedia(post)}
-            <div className="post__likes-container">
-              <p className="post__likes">
-                <i className="fa-solid fa-thumbs-up post__like"></i> {post.likes}
-              </p>
-              <p className="post__dislikes">
-                <i className="fa-solid fa-thumbs-down post__dislike"></i> {post.dislikes}
-              </p>
-            </div>
-            {/* Render other post details */}
+        <div className="post">
+          <p className="post__caption">{post.caption}</p>
+          <Link to={`/${post.id}`} key={post.id} className="post__tag">
+            <div className="post__media--container">{renderMedia(post)}</div>
+          </Link>
+          <div className="post__likes-container">
+            <p className="post__likes">
+              <i className="fa-solid fa-thumbs-up post__like"></i> {post.likes}
+            </p>
+            <p className="post__dislikes">
+              <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
+              {post.dislikes}
+            </p>
           </div>
-        </Link>
+          {/* Render other post details */}
+        </div>
       ))}
     </div>
   );
