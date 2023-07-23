@@ -1,4 +1,4 @@
-const { Post } = require("../models");
+const { Post, User } = require("../models");
 
 exports.createPost = (req, res, next) => {
   let post = null;
@@ -35,9 +35,8 @@ exports.createPost = (req, res, next) => {
 
 exports.getAllPosts = (req, res, next) => {
   Post.findAll({
-    order: [
-      ["createdAt", "DESC"],
-    ],
+    order: [["createdAt", "DESC"]],
+    include: [{ model: User, attributes: ["firstName", "lastName"] }],
   })
     .then((posts) => {
       res.status(200).json({
