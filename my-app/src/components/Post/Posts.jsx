@@ -39,12 +39,12 @@ function PostList() {
   return (
     <div className="post-list">
       {posts.map((post) => (
-        <div className="post">
+        <div className="post" key={post.id}>
           <h2 className="post__author">
             {post.User.firstName} {post.User.lastName}
           </h2>
           <p className="post__caption">{post.caption}</p>
-          <Link to={`/${post.id}`} key={post.id} className="post__tag">
+          <Link to={`/${post.id}`}  className="post__tag">
             <div className="post__media--container">{renderMedia(post)}</div>
           </Link>
           <div className="post__likes-container">

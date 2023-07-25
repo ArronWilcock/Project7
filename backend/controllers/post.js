@@ -18,6 +18,8 @@ exports.createPost = (req, res, next) => {
     likes: 0,
     dislikes: 0,
     UserId: parsedPost.userId,
+    usersLiked: [],
+    usersDisliked: [],
   });
   post
     .save()
@@ -64,3 +66,59 @@ exports.getOnePost = (req, res, next) => {
       });
     });
 };
+
+exports.likePost = async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({
+        error: "Post not found",
+      });
+    }
+
+    const usersLiked = [...post.usersLiked]; // Make a copy of the usersLiked array
+    const usersDisliked = [...post.usersDisliked]; // Make a copy of the usersDisliked array
+    const userId = req.body.userId;
+    const like = req.body.like;
+
+    if (like === 1 && !usersLiked.includes(userId)) {
+      usersLiked.push(userId);
+      removeUserFromDisliked(usersDisliked, userId); // Call a new helper function
+    } else if (like === -1 && !usersDisliked.includes(userId)) {
+      usersDisliked.push(userId);
+      removeUserFromLiked(usersLiked, userId); // Call a new helper function
+    } else if (like === 0 && (usersLiked.includes(userId) || usersDisliked.includes(userId))) {
+      removeUserFromLiked(usersLiked, userId); // Call a new helper function
+      removeUserFromDisliked(usersDisliked, userId); // Call a new helper function
+    }
+
+    post.likes = usersLiked.length;
+    post.dislikes = usersDisliked.length;
+
+    await post.save();
+
+    res.status(200).json({
+      message: "Post updated successfully!",
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message || error,
+    });
+  }
+};
+
+// New helper function to remove a user from the liked array
+function removeUserFromLiked(usersLiked, userId) {
+  const index = usersLiked.indexOf(userId);
+  if (index !== -1) {
+    usersLiked.splice(index, 1);
+  }
+}
+
+// New helper function to remove a user from the disliked array
+function removeUserFromDisliked(usersDisliked, userId) {
+  const index = usersDisliked.indexOf(userId);
+  if (index !== -1) {
+    usersDisliked.splice(index, 1);
+  }
+}
