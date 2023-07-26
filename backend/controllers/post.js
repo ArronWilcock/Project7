@@ -67,58 +67,102 @@ exports.getOnePost = (req, res, next) => {
     });
 };
 
-exports.likePost = async (req, res, next) => {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) {
-      return res.status(404).json({
-        error: "Post not found",
-      });
-    }
-
-    const usersLiked = [...post.usersLiked]; // Make a copy of the usersLiked array
-    const usersDisliked = [...post.usersDisliked]; // Make a copy of the usersDisliked array
+exports.likePost = (req, res, next) => {
+  Post.findOne({ where: { id: req.params.id } }).then((post) => {
+    const usersLiked = post.usersLiked;
+    const usersDisliked = post.usersDisliked;
     const userId = req.body.userId;
     const like = req.body.like;
-
     if (like === 1 && !usersLiked.includes(userId)) {
+      resetLike(usersLiked, userId, usersDisliked);
       usersLiked.push(userId);
-      removeUserFromDisliked(usersDisliked, userId); // Call a new helper function
     } else if (like === -1 && !usersDisliked.includes(userId)) {
+      resetLike(usersLiked, userId, usersDisliked);
       usersDisliked.push(userId);
-      removeUserFromLiked(usersLiked, userId); // Call a new helper function
-    } else if (like === 0 && (usersLiked.includes(userId) || usersDisliked.includes(userId))) {
-      removeUserFromLiked(usersLiked, userId); // Call a new helper function
-      removeUserFromDisliked(usersDisliked, userId); // Call a new helper function
+    } else if (
+      like === 0 &&
+      (usersLiked.includes(userId) || usersDisliked.includes(userId))
+    ) {
+      resetLike(usersLiked, userId, usersDisliked);
     }
 
     post.likes = usersLiked.length;
     post.dislikes = usersDisliked.length;
 
-    await post.save();
+    // Prepare the updates object
+    const updates = {
+      likes: post.likes,
+      dislikes: post.dislikes,
+      usersLiked: usersLiked,
+      usersDisliked: usersDisliked,
+    };
 
-    res.status(200).json({
-      message: "Post updated successfully!",
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: error.message || error,
-    });
-  }
+    Post.update(updates, { where: { id: req.params.id } })
+      .then(() => {
+        res.status(201).json({
+          message: "Post updated successfully!",
+        });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error.message || error,
+        });
+      });
+  });
 };
 
-// New helper function to remove a user from the liked array
-function removeUserFromLiked(usersLiked, userId) {
-  const index = usersLiked.indexOf(userId);
-  if (index !== -1) {
-    usersLiked.splice(index, 1);
-  }
+// helper function for removing a user from any like/dislike array they are no longer required in
+function resetLike(usersLiked, userId, usersDisliked) {
+  likesIndex = usersLiked.indexOf(userId);
+  dislikesIndex = usersDisliked.indexOf(userId);
+  usersLiked.splice(likesIndex, 1);
+  usersDisliked.splice(dislikesIndex, 1);
 }
 
-// New helper function to remove a user from the disliked array
-function removeUserFromDisliked(usersDisliked, userId) {
-  const index = usersDisliked.indexOf(userId);
-  if (index !== -1) {
-    usersDisliked.splice(index, 1);
-  }
-}
+exports.markPostAsRead = (req, res, next) => {
+  let { postId, userId } = req.params; // Assuming postId and userId are passed as parameters in the request
+
+  // Parse postId and userId as integers
+  postId = parseInt(postId, 10);
+  userId = parseInt(userId, 10);
+
+  console.log("postId:", postId);
+  console.log("userId:", userId);
+
+  Post.findByPk(postId)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      // Check if the user has already marked the post as read
+      if (post.readByUsers.includes(userId.toString())) {
+        return res
+          .status(400)
+          .json({ error: "Post is already marked as read by this user" });
+      }
+
+      // Update the readByUsers array with the user's ID
+      post.readByUsers.push(userId.toString()); // Convert back to string as the array contains strings
+
+      console.log("Updated readByUsers array:", post.readByUsers);
+
+      // Save the updated post
+      return post
+        .save()
+        .then((updatedPost) => {
+          console.log("Updated post:", updatedPost);
+          res
+            .status(200)
+            .json({ message: "Post marked as read successfully!" });
+        })
+        .catch((error) => {
+          console.error("Error while saving updated post:", error);
+          res.status(500).json({ error: "Failed to mark post as read" });
+        });
+    })
+    .catch((error) => {
+      console.error("Error while marking post as read:", error);
+      res.status(500).json({ error: error });
+    });
+};
