@@ -7,7 +7,25 @@ import { useParams } from "react-router-dom";
 function SinglePost() {
   const [post, setPost] = useState(null);
   const token = useContext(store).state.userInfo.token;
+  const userId = useContext(store).state.userInfo.userId;
   const { postId } = useParams();
+
+  const markPostAsRead = () => {
+    axios
+      .post(
+        `http://localhost:3000/api/posts/${postId}/mark-read/${userId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        console.log("Post marked as read");
+      })
+      .catch((error) => {
+        console.error("Error marking post as read:", error);
+      });
+  };
 
   useEffect(() => {
     axios
@@ -17,6 +35,8 @@ function SinglePost() {
       .then((response) => {
         const data = response.data;
         setPost(data);
+
+        markPostAsRead();
       })
       .catch((error) => {
         console.error(error);

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 function PostList() {
   const [posts, setPosts] = useState([]);
   const token = useContext(store).state.userInfo.token;
+  const userId = JSON.stringify(useContext(store).state.userInfo.userId);
 
   useEffect(() => {
     axios
@@ -43,20 +44,30 @@ function PostList() {
           <h2 className="post__author">
             {post.User.firstName} {post.User.lastName}
           </h2>
-          <p className="post__caption">{post.caption}</p>
-          <Link to={`/${post.id}`}  className="post__tag">
+          <Link to={`/${post.id}`} className="post__tag">
+            <p className="post__caption">{post.caption}</p>
+
             <div className="post__media--container">{renderMedia(post)}</div>
           </Link>
-          <div className="post__likes-container">
-            <p className="post__likes">
-              <i className="fa-solid fa-thumbs-up post__like"></i> {post.likes}
-            </p>
-            <p className="post__dislikes">
-              <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
-              {post.dislikes}
-            </p>
+          <div className="post__footer">
+            <div className="post__likes-container">
+              <p className="post__likes">
+                <i className="fa-solid fa-thumbs-up post__like"></i>{" "}
+                {post.likes}
+              </p>
+              <p className="post__dislikes">
+                <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
+                {post.dislikes}
+              </p>
+            </div>
+            <div className="post__isRead-container">
+              {post.readByUsers.includes(userId) && (
+                <p className="post__isRead">
+                  <i class="fa-brands fa-readme"></i>
+                </p>
+              )}
+            </div>
           </div>
-          {/* Render other post details */}
         </div>
       ))}
     </div>

@@ -34,7 +34,6 @@ exports.createPost = (req, res, next) => {
       });
     });
 };
-
 exports.getAllPosts = (req, res, next) => {
   Post.findAll({
     order: [["createdAt", "DESC"]],
@@ -142,24 +141,26 @@ exports.markPostAsRead = (req, res, next) => {
           .json({ error: "Post is already marked as read by this user" });
       }
 
-      // Update the readByUsers array with the user's ID
-      post.readByUsers.push(userId.toString()); // Convert back to string as the array contains strings
+      let { readByUsers } = post;
 
-      console.log("Updated readByUsers array:", post.readByUsers);
+      readByUsers = [...readByUsers, userId.toString()];
+      post.update({ readByUsers }).then((post) => {
+        console.log("Updated readByUsers array:", post.readByUsers);
 
-      // Save the updated post
-      return post
-        .save()
-        .then((updatedPost) => {
-          console.log("Updated post:", updatedPost);
-          res
-            .status(200)
-            .json({ message: "Post marked as read successfully!" });
-        })
-        .catch((error) => {
-          console.error("Error while saving updated post:", error);
-          res.status(500).json({ error: "Failed to mark post as read" });
-        });
+        // Save the updated post
+        post
+          .save()
+          .then((updatedPost) => {
+            console.log("Updated post:", updatedPost);
+            res
+              .status(200)
+              .json({ message: "Post marked as read successfully!" });
+          })
+          .catch((error) => {
+            console.error("Error while saving updated post:", error);
+            res.status(500).json({ error: "Failed to mark post as read" });
+          });
+      });
     })
     .catch((error) => {
       console.error("Error while marking post as read:", error);
