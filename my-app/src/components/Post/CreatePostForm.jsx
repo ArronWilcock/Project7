@@ -10,8 +10,7 @@ function CreatePostForm() {
   const [mediaPreview, setMediaPreview] = useState(null);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
-  const {token, userId} = useContext(store).state.userInfo;
-  
+  const { token, userId } = useContext(store).state.userInfo;
 
   const handleCaptionChange = (event) => {
     setCaption(event.target.value);
@@ -49,20 +48,29 @@ function CreatePostForm() {
 
     try {
       // Check if the user is authorized using the token from Redux store
-
+      const post = JSON.stringify({ caption, userId });
+      let response;
       // TODO check if user has uploaded file. If not don't use formData, use JSON
-      const formData = new FormData();
-      formData.append("post", JSON.stringify({ caption, userId }));
-      formData.append("media", mediaFile);
+      if (mediaFile) {
+        const formData = new FormData();
+        formData.append("post", post);
+        formData.append("media", mediaFile);
 
-      const response = await axios.post(
-        "http://localhost:3000/api/posts",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
+        response = await axios.post(
+          "http://localhost:3000/api/posts",
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } else {
+        response = await axios.post("http://localhost:3000/api/posts", post, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
       console.log("Post created:", response.data);
       navigate("/");
     } catch (error) {
@@ -106,10 +114,7 @@ function CreatePostForm() {
           )}
         </>
       )}
-      <button
-        className="create-post__submitbtn"
-        type="submit"
-      >
+      <button className="create-post__submitbtn" type="submit">
         Post
       </button>
     </form>
