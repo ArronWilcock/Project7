@@ -66,58 +66,6 @@ exports.getOnePost = (req, res, next) => {
     });
 };
 
-exports.likePost = (req, res, next) => {
-  Post.findOne({ where: { id: req.params.id } }).then((post) => {
-    const usersLiked = post.usersLiked;
-    const usersDisliked = post.usersDisliked;
-    const userId = req.body.userId;
-    const like = req.body.like;
-    if (like === 1 && !usersLiked.includes(userId)) {
-      resetLike(usersLiked, userId, usersDisliked);
-      usersLiked.push(userId);
-    } else if (like === -1 && !usersDisliked.includes(userId)) {
-      resetLike(usersLiked, userId, usersDisliked);
-      usersDisliked.push(userId);
-    } else if (
-      like === 0 &&
-      (usersLiked.includes(userId) || usersDisliked.includes(userId))
-    ) {
-      resetLike(usersLiked, userId, usersDisliked);
-    }
-
-    post.likes = usersLiked.length;
-    post.dislikes = usersDisliked.length;
-
-    // Prepare the updates object
-    const updates = {
-      likes: post.likes,
-      dislikes: post.dislikes,
-      usersLiked: usersLiked,
-      usersDisliked: usersDisliked,
-    };
-
-    Post.update(updates, { where: { id: req.params.id } })
-      .then(() => {
-        res.status(201).json({
-          message: "Post updated successfully!",
-        });
-      })
-      .catch((error) => {
-        res.status(400).json({
-          error: error.message || error,
-        });
-      });
-  });
-};
-
-// helper function for removing a user from any like/dislike array they are no longer required in
-function resetLike(usersLiked, userId, usersDisliked) {
-  likesIndex = usersLiked.indexOf(userId);
-  dislikesIndex = usersDisliked.indexOf(userId);
-  usersLiked.splice(likesIndex, 1);
-  usersDisliked.splice(dislikesIndex, 1);
-}
-
 exports.markPostAsRead = (req, res, next) => {
   let { postId, userId } = req.params; // Assuming postId and userId are passed as parameters in the request
 
@@ -167,3 +115,75 @@ exports.markPostAsRead = (req, res, next) => {
       res.status(500).json({ error: error });
     });
 };
+
+exports.likePost = (req, res, next) => {
+  let postId = req.params.id;
+  let userId = req.body.userId; // Assuming postId and userId are passed as parameters in the request
+
+  console.log("postId:", postId);
+  console.log("userId:", userId);
+
+  Post.findByPk(postId)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      const usersLiked = post.usersLiked;
+      const usersDisliked = post.usersDisliked;
+      const like = req.body.like;
+      if (like === 1 && !usersLiked.includes(userId.toString())) {
+        resetLike(usersLiked, userId.toString(), usersDisliked);
+        usersLiked.push(userId.toString());
+      } else if (like === -1 && !usersDisliked.includes(userId.toString())) {
+        resetLike(usersLiked, userId.toString(), usersDisliked);
+        usersDisliked.push(userId.toString());
+      } else if (
+        like === 0 &&
+        (usersLiked.includes(userId.toString()) ||
+          usersDisliked.includes(userId.toString()))
+      ) {
+        resetLike(usersLiked, userId.toString(), usersDisliked);
+      }
+
+      post.likes = usersLiked.length;
+      post.dislikes = usersDisliked.length;
+
+      // Set the updated usersLiked and usersDisliked arrays in the post object
+      post.usersLiked = usersLiked;
+      post.usersDisliked = usersDisliked;
+
+      post
+        .save()
+        .then((updatedPost) => {
+          console.log("Updated post:", updatedPost);
+          res
+            .status(200)
+            .json({ message: "Post marked as liked/disliked successfully!" });
+        })
+        .catch((error) => {
+          console.error("Error while saving updated post:", error);
+          res
+            .status(500)
+            .json({ error: "Failed to mark post as liked/disliked" });
+        });
+    })
+    .catch((error) => {
+      console.error("Error while marking post as liked/disliked:", error);
+      res.status(500).json({ error: error });
+    });
+};
+
+// helper function for removing a user from any like/dislike array they are no longer required in
+function resetLike(usersLiked, userId, usersDisliked) {
+  const likesIndex = usersLiked.indexOf(userId);
+  const dislikesIndex = usersDisliked.indexOf(userId);
+
+  if (likesIndex !== -1) {
+    usersLiked.splice(likesIndex, 1);
+  }
+
+  if (dislikesIndex !== -1) {
+    usersDisliked.splice(dislikesIndex, 1);
+  }
+}
