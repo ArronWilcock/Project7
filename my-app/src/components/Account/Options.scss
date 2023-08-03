@@ -10,9 +10,12 @@
   gap: 20px;
   border: 2px solid grey;
   border-radius: 15px;
-  width: 500px;
 
-  &__title {
+  @include tablet {
+    width: 500px;
+  }
+  @include desktop {
+    width: 500px;
   }
 
   &__btn {

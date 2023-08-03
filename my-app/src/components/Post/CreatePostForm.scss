@@ -1,38 +1,47 @@
 @import "../../styles/utils/variables";
 @import "../../styles/utils/mixins";
 
-.create-post{
-    display: flex;
-    flex-direction: column;
+.create-post {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  margin: 20px 10px;
+  border: 2px solid grey;
+  border-radius: 10px;
+  padding: 10px;
+  gap: 15px;
+
+  @include tablet {
+    width: 75%;
+    margin: 20px auto;
+  }
+  @include desktop {
     width: 50%;
     margin: 20px auto;
-    border: 2px solid grey;
-    border-radius: 10px;
+  }
+
+  &__upload {
+    align-self: center;
+  }
+
+  &__media-preview {
+    justify-self: center;
+    align-self: center;
+    height: 500px;
+    object-fit: contain;
+  }
+
+  &__caption {
     padding: 10px;
-    gap: 15px;
+    border-radius: 5px;
+  }
 
-    &__upload{
-        align-self: center;
-    }
-
-    &__media-preview{
-        justify-self: center;
-        align-self: center;
-        height: 500px;
-        object-fit: contain;
-    }
-
-    &__caption{
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    &__submitbtn{
-        align-self: center;
-        border: 1px solid black;
-        border-radius: 25px;
-        background-color: red;
-        color: #fff;
-        padding: 10px 25px;
-    }
+  &__submitbtn {
+    align-self: center;
+    border: 1px solid black;
+    border-radius: 25px;
+    background-color: red;
+    color: #fff;
+    padding: 10px 25px;
+  }
 }

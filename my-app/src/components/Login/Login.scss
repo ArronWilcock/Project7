@@ -5,11 +5,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 10px;
   padding: 10px 0;
 
-  @include mobile {
-    margin: 0 10px;
+  @include desktop {
+    margin: 0 auto;
   }
 
   label {
@@ -21,14 +21,14 @@
 
   input[type="email"],
   input[type="password"] {
-    width: 50%;
-    padding: 5px;
-    margin-top: 5px;
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
 
-    @include mobile {
-      width: 100%;
-      margin: 10px;
-      padding: 10px;
+    @include desktop {
+      width: 50%;
+      padding: 5px;
+      margin-top: 5px;
     }
   }
 
