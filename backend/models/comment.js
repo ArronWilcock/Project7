@@ -14,6 +14,12 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
     });
+
+    Comment.belongsTo(models.Post, {
+      foreignKey: {
+        allowNull: false,
+      },
+    });
   };
 
   return Comment;

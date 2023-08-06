@@ -39,9 +39,6 @@ module.exports = (sequelize) => {
       },
     });
   };
-  Post.associate = (models) => {
-    Post.hasMany(models.Comment);
-  };
 
   return Post;
 };

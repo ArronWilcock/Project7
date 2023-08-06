@@ -63,7 +63,7 @@ function PostList() {
             <div className="post__isRead-container">
               {post.readByUsers.includes(userId) && (
                 <p className="post__isRead">
-                  <i class="fa-brands fa-readme"></i>
+                  <i className="fa-brands fa-readme"></i>
                 </p>
               )}
             </div>
