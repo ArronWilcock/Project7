@@ -26,9 +26,15 @@
 
   &__media-preview {
     justify-self: center;
-    align-self: center;
-    height: 500px;
+    max-height: 500px;
     object-fit: contain;
+
+    @include tablet {
+      align-self: center;
+    }
+    @include desktop {
+      align-self: center;
+    }
   }
 
   &__caption {
