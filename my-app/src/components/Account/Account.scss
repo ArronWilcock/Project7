@@ -16,6 +16,13 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    @include tablet {
+      justify-content: flex-start;
+    }
+    @include desktop {
+      justify-content: flex-start;
+    }
   }
 
   .sidebar button {
@@ -89,8 +96,6 @@
 
   }
 
-  .delete-account__title {
-  }
   .delete-account__btn {
     padding: 10px;
     border-radius: 10px;

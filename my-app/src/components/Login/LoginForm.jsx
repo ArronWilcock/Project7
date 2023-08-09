@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { store, actions } from "../../store";
 
 function LoginForm({ setLoginState }) {
-  const [email, setEmail] = useState("arron.wilcock@outlook.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useContext(store);
