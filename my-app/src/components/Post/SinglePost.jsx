@@ -23,7 +23,9 @@ function SinglePost() {
         console.log("Post marked as read");
       })
       .catch((error) => {
-        console.error("Error marking post as read:", error);
+        if (error.response.status !== 409) {
+          console.error("Error marking post as read:", error);
+        }
       });
   };
 

@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Comment, Post } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -63,18 +63,48 @@ exports.login = (req, res, next) => {
     });
 };
 
-exports.deleteAccount = (req, res, next) => {
+exports.deleteAccount = async (req, res, next) => {
   const userId = req.params.id;
 
-  User.destroy({ where: { id: userId } })
-    .then(() => {
-      res.status(200).json({
-        message: "User account deleted successfully",
-      });
+  try {
+    // First, find all posts associated with the user
+    const userPosts = await Post.findAll({ where: { UserId: userId } });
+
+    // Delete all comments associated with the user's posts
+    for (const post of userPosts) {
+      await Comment.destroy({ where: { PostId: post.id } });
+    }
+
+    // Delete all comments where the user is the commenter
+    await Comment.destroy({ where: { UserId: userId } });
+
+    // Then, delete the user's posts and the user itself
+    await Post.destroy({ where: { UserId: userId } });
+    await User.destroy({ where: { id: userId } });
+
+    res.status(200).json({
+      message: "User account, associated posts, and comments deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message || error,
+    });
+  }
+};
+
+
+
+
+exports.getOneUser = (req, res, next) => {
+  User.findOne({
+    where: { id: req.params.id }, // Use where clause to specify the post ID
+  })
+    .then((post) => {
+      res.status(200).json(post);
     })
     .catch((error) => {
-      res.status(500).json({
-        error: error.message || error,
+      res.status(404).json({
+        error: error,
       });
     });
 };

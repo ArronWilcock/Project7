@@ -7,6 +7,7 @@
   align-items: center;
   padding: 10px;
   gap: 20px;
+  width: 100%;
 }
 .post {
   display: flex;
@@ -67,8 +68,43 @@
 
   &__isRead {
     display: flex;
-    color: blue;
     padding-right: 10px;
     gap: 10px;
+  }
+
+  &__comments{
+
+  }
+
+  &__comment-form{
+    margin-top: 5px;
+    display: flex;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 5px;
+    justify-content: space-between;
+
+    &--input{
+      border: none;
+      width: 100%;
+    }
+
+    &--btn{
+      border-radius: 20px;
+      background-color: red;
+      color: white;
+      border: 1px black solid;
+      padding: 5px 10px;
+    }
+  }
+}
+.comment{
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-top: 5px;
+  padding: 5px;
+
+  &__author{
+    font-size: 16px;
   }
 }
