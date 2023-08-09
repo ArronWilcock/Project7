@@ -4,7 +4,7 @@ exports.createComment = (req, res, next) => {
   comment = new Comment({
     comment: req.body.comment,
     UserId: req.body.userId,
-    PostId: req.params.PostId
+    PostId: req.params.PostId,
   });
   comment
     .save()

@@ -81,6 +81,7 @@ function CreatePostForm() {
   return (
     <form className="create-post" onSubmit={handleSubmit}>
       <input
+        aria-label="create post text field"
         className="create-post__caption"
         type="text"
         placeholder="Caption"
@@ -88,6 +89,7 @@ function CreatePostForm() {
         onChange={handleCaptionChange}
       />
       <input
+        aria-label="create post media input selector"
         className="create-post__upload"
         type="file"
         accept="image/*,video/*,audio/*"

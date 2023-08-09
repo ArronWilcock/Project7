@@ -123,22 +123,30 @@ function AccountPage() {
   return (
     <div className="account-page">
       <div className="sidebar">
-        <button onClick={toggleSidebar}>
+        <button aria-label="sidebar toggle" onClick={toggleSidebar}>
           <i className="fa-solid fa-caret-down"></i>
         </button>
         <ul className={showSidebar ? "" : "hide"}>
           <li>
-            <button onClick={() => showMainContainer("myposts")}>
+            <button
+              aria-label="My posts link"
+              onClick={() => showMainContainer("myposts")}
+            >
               My Posts
             </button>
           </li>
           <li>
-            <button onClick={() => showMainContainer("delete-account")}>
+            <button
+              aria-label="Delete account link"
+              onClick={() => showMainContainer("delete-account")}
+            >
               Delete Account
             </button>
           </li>
           <li>
-            <button onClick={() => handleLogout()}>Logout</button>
+            <button aria-label="Logout button" onClick={() => handleLogout()}>
+              Logout
+            </button>
           </li>
         </ul>
       </div>

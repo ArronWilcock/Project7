@@ -7,5 +7,4 @@ const auth = require("../middleware/auth");
 router.post("/:PostId/comment", auth, commentController.createComment);
 router.get("/:PostId/comments", auth, commentController.getAllComments);
 
-
 module.exports = router;

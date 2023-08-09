@@ -9,8 +9,7 @@ const path = require("path");
 
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
-const commentRoutes = require("./routes/comment")
-
+const commentRoutes = require("./routes/comment");
 
 // middleware that takes incoming requests with content type application/json and makes its body available on the reponse object
 app.use(express.json());

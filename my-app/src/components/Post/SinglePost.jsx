@@ -43,7 +43,7 @@ function SinglePost() {
       .catch((error) => {
         console.error(error);
       });
-  }, [postId, token,]);
+  }, [postId, token]);
 
   const renderMedia = (post) => {
     if (post && post.imgUrl) {

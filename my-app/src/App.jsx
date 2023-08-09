@@ -27,10 +27,22 @@ function App() {
           path="/"
           element={state.userInfo ? <HomePage /> : <Navigate to="/login" />}
         />
-        <Route path="/" element={state.userInfo ? <PostList /> : <Navigate to="/login" />} />
-        <Route path="/account" element={state.userInfo ? <AccountPage /> : <Navigate to="/login" />} />
-        <Route path="/create-post" element={state.userInfo ? <CreatePost /> : <Navigate to="/login" />} />
-        <Route path="/:postId" element={state.userInfo ? <OnePost /> : <Navigate to="/login" />} />
+        <Route
+          path="/"
+          element={state.userInfo ? <PostList /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/account"
+          element={state.userInfo ? <AccountPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/create-post"
+          element={state.userInfo ? <CreatePost /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/:postId"
+          element={state.userInfo ? <OnePost /> : <Navigate to="/login" />}
+        />
       </Routes>
     </Router>
   );

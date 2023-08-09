@@ -71,7 +71,7 @@
     padding-right: 10px;
     gap: 10px;
   }
-  &__comment-form{
+  &__comment-form {
     margin-top: 5px;
     display: flex;
     border-top: 1px solid black;
@@ -79,27 +79,27 @@
     padding: 5px;
     justify-content: space-between;
 
-    &--input{
+    &--input {
       border: none;
       width: 100%;
     }
 
-    &--btn{
+    &--btn {
       border-radius: 20px;
-      background-color: red;
-      color: white;
-      border: 1px black solid;
+      background-color: #fff;
+      color: #000;
+      border: 2px red solid;
       padding: 5px 10px;
     }
   }
 }
-.comment{
+.comment {
   border: 1px solid black;
   border-radius: 5px;
   margin-top: 5px;
   padding: 5px;
 
-  &__author{
+  &__author {
     font-size: 16px;
   }
 }

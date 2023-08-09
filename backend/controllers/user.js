@@ -83,7 +83,8 @@ exports.deleteAccount = async (req, res, next) => {
     await User.destroy({ where: { id: userId } });
 
     res.status(200).json({
-      message: "User account, associated posts, and comments deleted successfully",
+      message:
+        "User account, associated posts, and comments deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -91,9 +92,6 @@ exports.deleteAccount = async (req, res, next) => {
     });
   }
 };
-
-
-
 
 exports.getOneUser = (req, res, next) => {
   User.findOne({
