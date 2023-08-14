@@ -144,6 +144,7 @@ function SinglePost() {
                   {comment.User.firstName} {comment.User.lastName} says...
                 </h2>
                 <p className="comment__text">{comment.comment}</p>
+                <hr className="comment__line-break"/>
               </div>
             ))}
           </div>

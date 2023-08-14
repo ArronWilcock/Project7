@@ -96,12 +96,14 @@
   }
 }
 .comment {
-  border: 1px solid black;
   border-radius: 5px;
   margin-top: 5px;
   padding: 5px;
 
   &__author {
     font-size: 16px;
+  }
+  &__line-break{
+    margin-top: 10px;
   }
 }
