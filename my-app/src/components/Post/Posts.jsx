@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 function PostList() {
   const [posts, setPosts] = useState([]);
-  const [newComment, setNewComment] = useState("");
+
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
 
@@ -15,24 +15,12 @@ function PostList() {
       .get("http://localhost:3000/api/posts", {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(async (response) => {
+      .then((response) => {
         const data = response.data;
-        const postsWithComments = await Promise.all(
-          data.posts.map(async (post) => {
-            const commentResponse = await axios.get(
-              `http://localhost:3000/api/posts/${post.id}/comments`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            const comments = commentResponse.data.comments;
-            return { ...post, comments };
-          })
-        );
-        setPosts(postsWithComments);
+        setPosts(data.posts);
       })
       .catch((error) => {
-        console.error(error.message);
+        console.error(error);
       });
   }, [token]);
 
@@ -47,28 +35,6 @@ function PostList() {
       }
     } else {
       return null; // No media file, return null
-    }
-  };
-
-  const handleCommentSubmit = async (postId) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/posts/${postId}/comment`,
-        {
-          comment: newComment,
-          userId: userId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.status === 201) {
-        // Refresh the post list to include the new comment
-        // You might want to implement a more efficient way to update the state
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -100,32 +66,6 @@ function PostList() {
                 <p className="post__isRead">Read by user</p>
               )}
             </div>
-          </div>
-
-          <div className="post__comments">
-            <div className="post__comment-form">
-              <input
-                className="post__comment-form--input"
-                placeholder="say what you're thinking ..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <button
-                className="post__comment-form--btn"
-                onClick={() => handleCommentSubmit(post.id)}
-              >
-                Post
-              </button>
-            </div>
-            <h3>Comments:</h3>
-            {post.comments.map((comment) => (
-              <div key={comment.id} className="comment">
-                <h2 className="comment__author">
-                  {comment.User.firstName} {comment.User.lastName} says...
-                </h2>
-                <p className="comment__text">{comment.comment}</p>
-              </div>
-            ))}
           </div>
         </div>
       ))}
