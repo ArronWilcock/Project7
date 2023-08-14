@@ -96,7 +96,7 @@ function PostList() {
               </p>
             </div>
             <div className="post__isRead-container">
-              {post.readByUsers.includes(userId) && (
+              {post.readByUsers.includes(`${userId}`) && (
                 <p className="post__isRead">Read by user</p>
               )}
             </div>
