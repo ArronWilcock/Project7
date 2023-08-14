@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 function SinglePost() {
   const [post, setPost] = useState(null);
   const [newComment, setNewComment] = useState("");
+  const [totalCommentCounts, setTotalCommentCounts] = useState({});
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
   const { postId } = useParams();
@@ -45,6 +46,13 @@ function SinglePost() {
         );
         const comments = commentsResponse.data.comments;
         const postWithComments = { ...data, comments };
+        const totalCommentCount = comments.length;
+
+        // Update the totalCommentCounts state
+        setTotalCommentCounts((prevCounts) => ({
+          ...prevCounts,
+          [postId]: totalCommentCount,
+        }));
         setPost(postWithComments);
         markPostAsRead();
       })
@@ -107,6 +115,10 @@ function SinglePost() {
               <p className="post__dislikes">
                 <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
                 {post.dislikes}
+              </p>
+              <p className="post__comments-count">
+                <i className="fa-regular fa-comment"></i>{" "}
+                {totalCommentCounts[post.id] || 0}
               </p>
             </div>
           </div>

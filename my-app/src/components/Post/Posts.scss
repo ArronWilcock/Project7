@@ -16,6 +16,7 @@
   border: 2px solid grey;
   border-radius: 10px;
   padding: 10px;
+  box-shadow: 0px 0px 5px 5px #d3d3d3;
 
   @include tablet {
     width: 50%;

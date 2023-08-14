@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 function PostList() {
   const [posts, setPosts] = useState([]);
+  const [totalCommentCounts, setTotalCommentCounts] = useState({});
 
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
@@ -15,12 +16,37 @@ function PostList() {
       .get("http://localhost:3000/api/posts", {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
+      .then(async (response) => {
         const data = response.data;
-        setPosts(data.posts);
+
+        const postsWithComments = await Promise.all(
+          data.posts.map(async (post) => {
+            const commentResponse = await axios.get(
+              `http://localhost:3000/api/posts/${post.id}/comments`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            const comments = commentResponse.data.comments;
+            console.log(comments); // Log the comments for each post
+
+            // Calculate the total count of comment strings for this post
+            const totalCommentCount = comments.length;
+
+            // Update the totalCommentCounts state
+            setTotalCommentCounts((prevCounts) => ({
+              ...prevCounts,
+              [post.id]: totalCommentCount,
+            }));
+
+            return { ...post, comments };
+          })
+        );
+
+        setPosts(postsWithComments);
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error.message);
       });
   }, [token]);
 
@@ -60,6 +86,12 @@ function PostList() {
                 <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
                 {post.dislikes}
               </p>
+              <Link to={`/${post.id}`}>
+                <p className="post__comments-count">
+                  <i className="fa-regular fa-comment"></i>{" "}
+                  {totalCommentCounts[post.id] || 0}
+                </p>
+              </Link>
             </div>
             <div className="post__isRead-container">
               {post.readByUsers.includes(`${userId}`) && (
