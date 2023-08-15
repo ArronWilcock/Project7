@@ -9,7 +9,7 @@ import axios from "axios";
 function AccountPage() {
   const [posts, setPosts] = useState([]);
   const [newComment, setNewComment] = useState("");
-
+  const [totalCommentCounts, setTotalCommentCounts] = useState({});
   const [showSidebar, setShowSidebar] = useState(true);
   const { dispatch } = useContext(store);
   const navigate = useNavigate();
@@ -59,6 +59,7 @@ function AccountPage() {
   };
 
   useEffect(() => {
+    // Fetch posts and comments
     axios
       .get(`http://localhost:3000/api/posts/by-user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -74,6 +75,14 @@ function AccountPage() {
               }
             );
             const comments = commentResponse.data.comments;
+            const totalCommentCount = comments.length; // Calculate total comment count
+
+            // Update the totalCommentCounts state
+            setTotalCommentCounts((prevCounts) => ({
+              ...prevCounts,
+              [post.id]: totalCommentCount,
+            }));
+
             return { ...post, comments };
           })
         );
@@ -175,6 +184,10 @@ function AccountPage() {
                       <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
                       {post.dislikes}
                     </p>
+                    <p className="post__comments-count">
+                      <i className="fa-regular fa-comment"></i>{" "}
+                      {totalCommentCounts[post.id] || 0}
+                    </p>
                   </div>
                   <div className="post__isRead-container">
                     {post.readByUsers.includes(userId) && (
@@ -207,6 +220,7 @@ function AccountPage() {
                         {comment.User.firstName} {comment.User.lastName} says...
                       </h2>
                       <p className="comment__text">{comment.comment}</p>
+                      <hr className="comment__line-break" />
                     </div>
                   ))}
                 </div>

@@ -62,13 +62,15 @@
     justify-content: center;
     align-items: center;
     margin: 5px;
-
+    
     @include tablet {
-      margin-left: 400px;
+      width: 100%;
     }
     @include desktop {
-      margin-left: 400px;
+      width: 100%;
     }
+
+
 
     .main-content {
       display: none;
@@ -88,10 +90,12 @@
     @include tablet {
       padding: 30px;
       gap: 40px;
+      width: 50%;
     }
     @include desktop {
       padding: 30px;
       gap: 40px;
+      width: 50%;
     }
   }
 
@@ -100,5 +104,6 @@
     border-radius: 10px;
     background-color: red;
     color: #fff;
+    cursor: pointer;
   }
 }
