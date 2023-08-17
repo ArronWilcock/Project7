@@ -11,13 +11,18 @@ function LoginForm({ setLoginState }) {
   const navigate = useNavigate();
   const { dispatch } = useContext(store);
 
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    setEmailError("");
     updateFormCompletion();
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    setPasswordError("");
     updateFormCompletion();
   };
 
@@ -43,8 +48,13 @@ function LoginForm({ setLoginState }) {
         navigate("/");
       })
       .catch((error) => {
-        // Handle sign-in error
-        console.error("Login error:", error);
+        if (error.response.data.message === "Invalid email") {
+          setEmailError("Invalid email");
+        } else if (error.response.data.message === "Incorrect password") {
+          setPasswordError("Incorrect password");
+        } else {
+          console.error("Login error:", error);
+        }
       });
   };
 
@@ -56,12 +66,14 @@ function LoginForm({ setLoginState }) {
         value={email}
         onChange={handleEmailChange}
       />
+      <div id="emailErrorMsg">{emailError}</div>
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={handlePasswordChange}
       />
+      <div id="passwordErrorMsg">{passwordError}</div>
       <button type="submit" disabled={!isFormComplete}>
         Login
       </button>

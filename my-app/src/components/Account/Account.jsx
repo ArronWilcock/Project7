@@ -42,21 +42,29 @@ function AccountPage() {
 
   const handleDeleteAccount = (event) => {
     event.preventDefault();
-
-    axios
-      .delete(`http://localhost:3000/api/auth/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log("Account removed successfully:");
-        dispatch({ type: actions.SET_LOGIN_STATE, value: true });
-        navigate("/login");
-      })
-      .catch((error) => {
-        // Handle sign-in error
-        console.error("Account deletion error:", error);
-      });
+  
+    // Display a confirmation dialog before proceeding
+    const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+  
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:3000/api/auth/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          console.log("Account removed successfully:");
+          dispatch({ type: actions.SET_LOGIN_STATE, value: true });
+          navigate("/login");
+        })
+        .catch((error) => {
+          // Handle account deletion error
+          console.error("Account deletion error:", error);
+        });
+    } else {
+      console.log("Account deletion was cancelled.");
+    }
   };
+  
 
   useEffect(() => {
     // Fetch posts and comments
@@ -131,11 +139,36 @@ function AccountPage() {
 
   return (
     <div className="account-page">
-      <div className="sidebar">
+      <div id="mobile-dropdown" className="sidebar">
         <button aria-label="sidebar toggle" onClick={toggleSidebar}>
           <i className="fa-solid fa-caret-down"></i>
         </button>
         <ul className={showSidebar ? "" : "hide"}>
+          <li>
+            <button
+              aria-label="My posts link"
+              onClick={() => showMainContainer("myposts")}
+            >
+              My Posts
+            </button>
+          </li>
+          <li>
+            <button
+              aria-label="Delete account link"
+              onClick={() => showMainContainer("delete-account")}
+            >
+              Delete Account
+            </button>
+          </li>
+          <li>
+            <button aria-label="Logout button" onClick={() => handleLogout()}>
+              Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div id="desktop-sidebar" className="sidebar">
+        <ul>
           <li>
             <button
               aria-label="My posts link"
@@ -235,6 +268,7 @@ function AccountPage() {
           <p className="delete-account__warning">
             All of your posts and comments will be permanently deleted
           </p>
+
           <button
             type="submit"
             className="delete-account__btn"

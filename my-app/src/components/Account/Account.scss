@@ -6,11 +6,27 @@
   flex-direction: column;
 
   @include tablet {
-    flex-direction: row;
+    flex-direction: row-reverse;
   }
   @include desktop {
-    flex-direction: row;
+    flex-direction: row-reverse;
   }
+
+  #desktop-sidebar {
+    width: 300px;
+    @include mobile {
+      display: none;
+    }
+  }
+  #mobile-dropdown {
+    @include tablet {
+      display: none;
+    }
+    @include desktop {
+      display: none;
+    }
+  }
+
   .sidebar {
     padding: 20px;
     display: flex;
@@ -62,15 +78,13 @@
     justify-content: center;
     align-items: center;
     margin: 5px;
-    
+
     @include tablet {
       width: 100%;
     }
     @include desktop {
       width: 100%;
     }
-
-
 
     .main-content {
       display: none;
@@ -97,13 +111,19 @@
       gap: 40px;
       width: 50%;
     }
-  }
 
-  .delete-account__btn {
-    padding: 10px;
-    border-radius: 10px;
-    background-color: red;
-    color: #fff;
-    cursor: pointer;
+    .delete-account__btn {
+      padding: 10px;
+      border-radius: 10px;
+      background-color: red;
+      color: #fff;
+      cursor: pointer;
+    }
+    .delete-account__title {
+      text-align: center;
+    }
+    .delete-account__warning {
+      text-align: center;
+    }
   }
 }

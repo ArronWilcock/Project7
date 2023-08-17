@@ -14,22 +14,26 @@ exports.signup = (req, res, next) => {
       .save()
       .then(() => {
         res.status(201).json({
+          success: true,
           message: "User added successfully",
         });
       })
       .catch((error) => {
         res.status(400).json({
-          error: error,
+          success: false,
+          message: "Email already registered",
         });
       });
   });
 };
+
 exports.login = (req, res, next) => {
   User.findOne({ where: { email: req.body.email } })
     .then((user) => {
       if (!user) {
         return res.status(401).json({
-          error: new Error(),
+          success: false,
+          message: "Invalid email",
         });
       }
       bcrypt
@@ -37,28 +41,30 @@ exports.login = (req, res, next) => {
         .then((valid) => {
           if (!valid) {
             return res.status(401).json({
-              error: new Error(),
+              success: false,
+              message: "Incorrect password",
             });
           }
-          // Here the JWT is generated using the jwt.sign method with a payload of the users unique identifier
-          // and assigning a secret key used to sign the jwt which expires in 24 hours
           const token = jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", {
             expiresIn: "24h",
           });
           res.status(200).json({
+            success: true,
             userId: user.id,
             token: token,
           });
         })
-        .catch((error) => {
+        .catch(() => {
           res.status(500).json({
-            error: error,
+            success: false,
+            message: "Internal server error",
           });
         });
     })
-    .catch((error) => {
+    .catch(() => {
       res.status(500).json({
-        error: error,
+        success: false,
+        message: "Internal server error",
       });
     });
 };

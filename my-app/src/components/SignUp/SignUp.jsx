@@ -1,44 +1,115 @@
 import React, { useState, useContext } from "react";
-import "./SignUp.scss";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { store, actions } from "../../store";
+import "./SignUp.scss";
+
+const validName = new RegExp(/^([^0-9]*)$/g);
+const validEmail = new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/g);
+const validPassword = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/); // At least 8 characters, including letters and numbers
 
 function SignUpForm() {
-  const [firstName, setfirstName] = useState("");
-  const [lastName, setlastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useContext(store);
 
-  const handlefirstNameChange = (event) => {
-    setfirstName(event.target.value);
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+    validateFirstName(event.target.value);
     updateFormCompletion();
   };
 
-  const handlelastNameChange = (event) => {
-    setlastName(event.target.value);
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+    validateLastName(event.target.value);
     updateFormCompletion();
   };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    validateEmail(event.target.value);
     updateFormCompletion();
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    validatePassword(event.target.value);
     updateFormCompletion();
   };
 
   const updateFormCompletion = () => {
-    setIsFormComplete(email !== "" && password !== "");
+    setIsFormComplete(
+      (prevState) => email !== "" && password !== "" && !prevState.passwordError
+    );
+  };
+
+  const validateFirstName = (value) => {
+    if (value === "") {
+      setFirstNameError("Required field");
+    } else if (!value.match(validName)) {
+      setFirstNameError("Invalid Name");
+    } else {
+      setFirstNameError("");
+    }
+  };
+
+  const validateLastName = (value) => {
+    if (value === "") {
+      setLastNameError("Required field");
+    } else if (!value.match(validName)) {
+      setLastNameError("Invalid Name");
+    } else {
+      setLastNameError("");
+    }
+  };
+
+  const validateEmail = (value) => {
+    if (value === "") {
+      setEmailError("Required field");
+    } else if (!value.match(validEmail)) {
+      setEmailError("Invalid Email");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const validatePassword = (value) => {
+    if (value === "") {
+      setPasswordError("Required field");
+    } else if (!value.match(validPassword)) {
+      setPasswordError(
+        "Password must be at least 8 characters and include letters and numbers"
+      );
+      setIsFormComplete(
+        (prevState) => prevState.email !== "" && prevState.password !== ""
+      );
+    } else {
+      setPasswordError("");
+      updateFormCompletion();
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Validation
+    validateFirstName(firstName);
+    validateLastName(lastName);
+    validateEmail(email);
+    validatePassword(password);
+
+    if (firstNameError || lastNameError || emailError || passwordError) {
+      return; // Don't proceed with submission if validation fails
+    }
 
     const formData = {
       firstName: firstName,
@@ -56,34 +127,41 @@ function SignUpForm() {
         navigate("/login");
       })
       .catch((error) => {
-        // Handle sign-up error
-        console.error("Sign up error:", error);
+        if (error.response.data.message === "Email already registered") {
+          setEmailError("Email already registered");
+        } else {
+          // Handle sign-up error
+          console.error("Sign up error:", error);
+        }
       });
   };
 
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
       <input
-        type="firstName"
+        type="text"
         placeholder="First Name"
         value={firstName}
-        onChange={handlefirstNameChange}
-        required
+        onChange={handleFirstNameChange}
       />
+      <div id="firstNameErrorMsg">{firstNameError}</div>
+
       <input
-        type="lastName"
+        type="text"
         placeholder="Last Name"
         value={lastName}
-        onChange={handlelastNameChange}
-        required
+        onChange={handleLastNameChange}
       />
+      <div id="lastNameErrorMsg">{lastNameError}</div>
+
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={handleEmailChange}
-        required
       />
+      <div id="emailErrorMsg">{emailError}</div>
+
       <input
         type="password"
         placeholder="Password"
@@ -91,6 +169,8 @@ function SignUpForm() {
         onChange={handlePasswordChange}
         required
       />
+      <div id="passwordErrorMsg">{passwordError}</div>
+
       <button type="submit" disabled={!isFormComplete}>
         Sign Up
       </button>
