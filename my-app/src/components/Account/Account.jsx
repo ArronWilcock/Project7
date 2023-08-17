@@ -42,10 +42,12 @@ function AccountPage() {
 
   const handleDeleteAccount = (event) => {
     event.preventDefault();
-  
+
     // Display a confirmation dialog before proceeding
-    const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
-  
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+
     if (confirmDelete) {
       axios
         .delete(`http://localhost:3000/api/auth/${userId}`, {
@@ -64,7 +66,6 @@ function AccountPage() {
       console.log("Account deletion was cancelled.");
     }
   };
-  
 
   useEffect(() => {
     // Fetch posts and comments
@@ -95,6 +96,8 @@ function AccountPage() {
           })
         );
         setPosts(postsWithComments);
+
+        showMainContainer("myposts");
       })
       .catch((error) => {
         console.error(error.message);
@@ -194,73 +197,81 @@ function AccountPage() {
       </div>
       <div className="main-container">
         <div id="myposts" className="main-content">
-          <div className="post-list">
-            {posts.map((post) => (
-              <div className="post" key={post.id}>
-                <h2 className="post__author">
-                  {post.User.firstName} {post.User.lastName}
-                </h2>
-                <Link to={`/${post.id}`} className="post__tag">
-                  <p className="post__caption">{post.caption}</p>
+          {posts.length === 0 ? (
+            <div className="no-posts-message">
+              <h1>User has no posts</h1>
+            </div>
+          ) : (
+            <div className="post-list">
+              {posts.map((post) => (
+                <div className="post" key={post.id}>
+                  <h2 className="post__author">
+                    {post.User.firstName} {post.User.lastName}
+                  </h2>
+                  <Link to={`/${post.id}`} className="post__tag">
+                    <p className="post__caption">{post.caption}</p>
 
-                  <div className="post__media--container">
-                    {renderMedia(post)}
-                  </div>
-                </Link>
-                <div className="post__footer">
-                  <div className="post__likes-container">
-                    <p className="post__likes">
-                      <i className="fa-solid fa-thumbs-up post__like"></i>{" "}
-                      {post.likes}
-                    </p>
-                    <p className="post__dislikes">
-                      <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
-                      {post.dislikes}
-                    </p>
-                    <p className="post__comments-count">
-                      <i className="fa-regular fa-comment"></i>{" "}
-                      {totalCommentCounts[post.id] || 0}
-                    </p>
-                  </div>
-                  <div className="post__isRead-container">
-                    {post.readByUsers.includes(userId) && (
-                      <p className="post__isRead">
-                        <i className="fa-brands fa-readme"></i>
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="post__comments">
-                  <div className="post__comment-form">
-                    <input
-                      className="post__comment-form--input"
-                      placeholder="say what you're thinking ..."
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <button
-                      className="post__comment-form--btn"
-                      onClick={() => handleCommentSubmit(post.id)}
-                    >
-                      Post
-                    </button>
-                  </div>
-                  <h3>Comments:</h3>
-                  {post.comments.map((comment) => (
-                    <div key={comment.id} className="comment">
-                      <h2 className="comment__author">
-                        {comment.User.firstName} {comment.User.lastName} says...
-                      </h2>
-                      <p className="comment__text">{comment.comment}</p>
-                      <hr className="comment__line-break" />
+                    <div className="post__media--container">
+                      {renderMedia(post)}
                     </div>
-                  ))}
+                  </Link>
+                  <div className="post__footer">
+                    <div className="post__likes-container">
+                      <p className="post__likes">
+                        <i className="fa-solid fa-thumbs-up post__like"></i>{" "}
+                        {post.likes}
+                      </p>
+                      <p className="post__dislikes">
+                        <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
+                        {post.dislikes}
+                      </p>
+                      <p className="post__comments-count">
+                        <i className="fa-regular fa-comment"></i>{" "}
+                        {totalCommentCounts[post.id] || 0}
+                      </p>
+                    </div>
+                    <div className="post__isRead-container">
+                      {post.readByUsers.includes(userId) && (
+                        <p className="post__isRead">
+                          <i className="fa-brands fa-readme"></i>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="post__comments">
+                    <div className="post__comment-form">
+                      <input
+                        className="post__comment-form--input"
+                        placeholder="say what you're thinking ..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                      />
+                      <button
+                        className="post__comment-form--btn"
+                        onClick={() => handleCommentSubmit(post.id)}
+                      >
+                        Post
+                      </button>
+                    </div>
+                    <h3>Comments:</h3>
+                    {post.comments.map((comment) => (
+                      <div key={comment.id} className="comment">
+                        <h2 className="comment__author">
+                          {comment.User.firstName} {comment.User.lastName}{" "}
+                          says...
+                        </h2>
+                        <p className="comment__text">{comment.comment}</p>
+                        <hr className="comment__line-break" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
+
         <div id="delete-account" className="main-content">
           <h2 className="delete-account__title">
             Are you sure you want to delete your account?
