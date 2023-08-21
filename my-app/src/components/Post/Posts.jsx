@@ -28,7 +28,6 @@ function PostList() {
               }
             );
             const comments = commentResponse.data.comments;
-            console.log(comments); // Log the comments for each post
 
             // Calculate the total count of comment strings for this post
             const totalCommentCount = comments.length;

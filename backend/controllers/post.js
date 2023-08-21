@@ -133,3 +133,82 @@ exports.markPostAsRead = (req, res, next) => {
       res.status(500).json({ error: error });
     });
 };
+
+exports.likePost = (req, res, next) => {
+  let { postId, userId } = req.params; // Assuming postId and userId are passed as parameters in the request
+  let { like } = req.body;
+
+  // Parse postId as integer
+  postId = parseInt(postId, 10);
+
+  console.log("postId:", postId);
+  console.log("userId:", userId);
+
+  Post.findByPk(postId)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      let { usersLiked, usersDisliked, likes, dislikes } = post;
+
+      if (like === 1) {
+        usersDisliked = usersDisliked.filter((id) => id !== userId);
+
+        if (!usersLiked.includes(userId)) {
+          resetLike(usersLiked, userId, usersDisliked);
+          usersLiked = [...usersLiked, userId];
+        }
+      } else if (like === -1) {
+        usersLiked = usersLiked.filter((id) => id !== userId);
+
+        if (!usersDisliked.includes(userId)) {
+          resetLike(usersLiked, userId, usersDisliked);
+          usersDisliked = [...usersDisliked, userId];
+        }
+      } else if (like === 0) {
+        usersLiked = usersLiked.filter((id) => id !== userId);
+        usersDisliked = usersDisliked.filter((id) => id !== userId);
+      }
+
+      likes = usersLiked.length;
+      dislikes = usersDisliked.length;
+
+      post
+        .update({ usersLiked, usersDisliked, likes, dislikes })
+        .then((post) => {
+          console.log("Updated post:", post);
+
+          // Save the updated post
+          post
+            .save()
+            .then((updatedPost) => {
+              console.log("Updated post:", updatedPost);
+              res
+                .status(200)
+                .json({ message: "Post liked/disliked successfully!" });
+            })
+            .catch((error) => {
+              console.error("Error while saving updated post:", error);
+              res.status(500).json({ error: "Failed to like/dislike post" });
+            });
+        });
+    })
+    .catch((error) => {
+      console.error("Error while liking/disliking post:", error);
+      res.status(500).json({ error: error });
+    });
+};
+
+function resetLike(usersLiked, userId, usersDisliked) {
+  const likesIndex = usersLiked.indexOf(userId.toString());
+  const dislikesIndex = usersDisliked.indexOf(userId.toString());
+
+  if (likesIndex !== -1) {
+    usersLiked.splice(likesIndex, 1);
+  }
+
+  if (dislikesIndex !== -1) {
+    usersDisliked.splice(dislikesIndex, 1);
+  }
+}
