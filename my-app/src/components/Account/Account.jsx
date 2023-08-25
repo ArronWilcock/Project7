@@ -68,6 +68,29 @@ function AccountPage() {
     }
   };
 
+  const handleDeletePost = (postId) => {
+    // Display a confirmation dialog before proceeding
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your Post? This action cannot be undone."
+    );
+
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:3000/api/posts/${postId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          console.log("Post removed successfully:");
+          setRefresh(!refresh);
+        })
+        .catch((error) => {
+          // Handle account deletion error
+          console.error("Post deletion error:", error);
+        });
+    } else {
+      console.log("Post deletion was cancelled.");
+    }
+  };
   useEffect(() => {
     // Fetch posts and comments
     axios
@@ -259,9 +282,15 @@ function AccountPage() {
             <div className="post-list">
               {posts.map((post) => (
                 <div className="post" key={post.id}>
-                  <h2 className="post__author">
-                    {post.User.firstName} {post.User.lastName}
-                  </h2>
+                  <div className="post__header">
+                    <h2 className="post__author">
+                      {post.User.firstName} {post.User.lastName}
+                    </h2>
+                    <i
+                      className="fa-solid fa-delete-left post__delete"
+                      onClick={() => handleDeletePost(post.id)}
+                    ></i>
+                  </div>
                   <Link to={`/${post.id}`} className="post__tag">
                     <p className="post__caption">{post.caption}</p>
 

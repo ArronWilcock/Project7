@@ -1,4 +1,4 @@
-const { Post, User } = require("../models");
+const { Post, User, Comment } = require("../models");
 
 exports.createPost = (req, res, next) => {
   let post = null;
@@ -83,6 +83,36 @@ exports.getOnePost = (req, res, next) => {
       });
     });
 };
+
+exports.deletePost = async (req, res, next) => {
+  const postId = parseInt(req.params.id, 10);
+
+  try {
+    // First, find the post by postId
+    const post = await Post.findByPk(postId);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    // Delete all comments associated with the post
+    await Comment.destroy({ where: { PostId: post.id } });
+
+    // Then, delete the post itself
+    await Post.destroy({ where: { id: postId } });
+
+    res.status(200).json({
+      message: "Post and associated comments deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message || error,
+    });
+  }
+};
+
 
 exports.markPostAsRead = (req, res, next) => {
   let { postId, userId } = req.params; // Assuming postId and userId are passed as parameters in the request
