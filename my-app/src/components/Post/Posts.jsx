@@ -8,6 +8,8 @@ function PostList() {
   const [posts, setPosts] = useState([]);
   const [totalCommentCounts, setTotalCommentCounts] = useState({});
 
+  const [refresh, setRefresh] = useState(false);
+
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
 
@@ -47,7 +49,7 @@ function PostList() {
       .catch((error) => {
         console.error(error.message);
       });
-  }, [token]);
+  }, [token, refresh]);
 
   const renderMedia = (post) => {
     if (post.imgUrl) {
@@ -60,6 +62,60 @@ function PostList() {
       }
     } else {
       return null; // No media file, return null
+    }
+  };
+  const handleLike = async (postId, usersLiked) => {
+    const isLiked = usersLiked.includes(userId.toString());
+    const likeValue = isLiked ? 0 : 1;
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/posts/${postId}/like/${userId}`,
+        { like: likeValue },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(response.data);
+      const updatedPosts = posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              likes: response.data.likes,
+              usersLiked: response.data.usersLiked,
+            }
+          : post
+      );
+
+      setPosts(updatedPosts);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  const handleDislike = async (postId, usersDisliked) => {
+    const isDisliked = usersDisliked.includes(userId.toString());
+    const likeValue = isDisliked ? 0 : -1;
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/posts/${postId}/like/${userId}`,
+        { like: likeValue },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(response.data);
+      const updatedPosts = posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              dislikes: response.data.dislikes,
+              usersDisliked: response.data.usersDisliked,
+            }
+          : post
+      );
+
+      setPosts(updatedPosts);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -78,11 +134,17 @@ function PostList() {
           <div className="post__footer">
             <div className="post__likes-container">
               <p className="post__likes">
-                <i className="fa-solid fa-thumbs-up post__like"></i>{" "}
+                <i
+                  className="fa-solid fa-thumbs-up post__like"
+                  onClick={() => handleLike(post.id, post.usersLiked)}
+                ></i>{" "}
                 {post.likes}
               </p>
               <p className="post__dislikes">
-                <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
+                <i
+                  className="fa-solid fa-thumbs-down post__dislike"
+                  onClick={() => handleDislike(post.id, post.usersDisliked)}
+                ></i>{" "}
                 {post.dislikes}
               </p>
               <Link to={`/${post.id}`}>

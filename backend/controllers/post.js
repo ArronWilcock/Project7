@@ -103,8 +103,8 @@ exports.markPostAsRead = (req, res, next) => {
       // Check if the user has already marked the post as read
       if (post.readByUsers.includes(userId.toString())) {
         return res
-          .status(409)
-          .json({ error: "Post is already marked as read by this user" });
+          .status(200)
+          .json({ message: "Post is already marked as read by this user" });
       }
 
       let { readByUsers } = post;
@@ -184,9 +184,10 @@ exports.likePost = (req, res, next) => {
             .save()
             .then((updatedPost) => {
               console.log("Updated post:", updatedPost);
-              res
-                .status(200)
-                .json({ message: "Post liked/disliked successfully!" });
+              res.status(200).json({
+                message: "Post liked/disliked successfully!",
+                data: updatedPost,
+              });
             })
             .catch((error) => {
               console.error("Error while saving updated post:", error);

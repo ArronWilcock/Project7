@@ -12,6 +12,8 @@ function SinglePost() {
   const userId = useContext(store).state.userInfo.userId;
   const { postId } = useParams();
 
+  const [refresh, setRefresh] = useState(false);
+
   const markPostAsRead = () => {
     axios
       .post(
@@ -59,7 +61,7 @@ function SinglePost() {
       .catch((error) => {
         console.error(error.message);
       });
-  }, [token, postId]); // Make sure to include dependencies if needed
+  }, [token, postId, refresh]); // Make sure to include dependencies if needed
 
   const renderMedia = (post) => {
     if (post && post.imgUrl) {
@@ -72,6 +74,53 @@ function SinglePost() {
       }
     } else {
       return null; // No media file or post, return null
+    }
+  };
+
+  const handleLike = async (postId, usersLiked) => {
+    const isLiked = usersLiked.includes(userId.toString());
+    const likeValue = isLiked ? 0 : 1;
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/posts/${postId}/like/${userId}`,
+        { like: likeValue },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(response.data);
+
+      // Update the post's likes and usersLiked
+      setPost((prevPost) => ({
+        ...prevPost,
+        likes: response.data.likes,
+        usersLiked: response.data.usersLiked,
+      }));
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  // Adapted handleDislike function
+  const handleDislike = async (postId, usersDisliked) => {
+    const isDisliked = usersDisliked.includes(userId.toString());
+    const likeValue = isDisliked ? 0 : -1;
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/posts/${postId}/like/${userId}`,
+        { like: likeValue },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(response.data);
+
+      // Update the post's dislikes and usersDisliked
+      setPost((prevPost) => ({
+        ...prevPost,
+        dislikes: response.data.dislikes,
+        usersDisliked: response.data.usersDisliked,
+      }));
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -88,9 +137,7 @@ function SinglePost() {
         }
       );
       if (response.status === 201) {
-        // Refresh the post list to include the new comment
-        // You might want to implement a more efficient way to update the state
-        window.location.reload();
+        setRefresh(!refresh);
       }
     } catch (error) {
       console.error(error);
@@ -109,11 +156,17 @@ function SinglePost() {
           <div className="post__footer">
             <div className="post__likes-container">
               <p className="post__likes">
-                <i className="fa-solid fa-thumbs-up post__like"></i>{" "}
+                <i
+                  className="fa-solid fa-thumbs-up post__like"
+                  onClick={() => handleLike(post.id, post.usersLiked)}
+                ></i>{" "}
                 {post.likes}
               </p>
               <p className="post__dislikes">
-                <i className="fa-solid fa-thumbs-down post__dislike"></i>{" "}
+                <i
+                  className="fa-solid fa-thumbs-down post__dislike"
+                  onClick={() => handleDislike(post.id, post.usersDisliked)}
+                ></i>{" "}
                 {post.dislikes}
               </p>
               <p className="post__comments-count">
@@ -144,7 +197,7 @@ function SinglePost() {
                   {comment.User.firstName} {comment.User.lastName} says...
                 </h2>
                 <p className="comment__text">{comment.comment}</p>
-                <hr className="comment__line-break"/>
+                <hr className="comment__line-break" />
               </div>
             ))}
           </div>
