@@ -37,3 +37,28 @@ exports.getAllComments = (req, res, next) => {
       });
     });
 };
+exports.deleteComment = async (req, res, next) => {
+  const commentId = parseInt(req.params.id, 10);
+
+  try {
+    
+    const comment = await Comment.findByPk(commentId);
+
+    if (!comment) {
+      return res.status(404).json({
+        message: "comment not found",
+      });
+    }
+
+    // Then, delete the post itself
+    await Comment.destroy({ where: { id: commentId } });
+
+    res.status(200).json({
+      message: "Comment deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message || error,
+    });
+  }
+};

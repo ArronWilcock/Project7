@@ -25,18 +25,25 @@
     width: 50%;
   }
 
-  &__header{
+  &__header {
     display: flex;
     justify-content: space-between;
   }
-  &__delete{
+  &__delete {
     align-self: center;
     font-size: 20px;
 
-    &:hover{
+    &:hover {
       cursor: pointer;
       color: red;
     }
+  }
+  &__back-btn:hover {
+    cursor: pointer;
+    color: red;
+  }
+  &__author {
+    font-size: 16px;
   }
 
   &__caption {
@@ -75,10 +82,18 @@
 
   &__like {
     color: green;
+    &:hover {
+      cursor: pointer;
+      scale: 1.2;
+    }
   }
 
   &__dislike {
     color: red;
+    &:hover {
+      cursor: pointer;
+      scale: 1.2;
+    }
   }
 
   &__isRead {
@@ -97,15 +112,28 @@
     &--input {
       border: none;
       width: 100%;
+      margin-right: 5px;
+      padding-left: 5px;
     }
 
     &--btn {
-      border-radius: 20px;
-      background-color: #fff;
-      color: #000;
-      border: 2px red solid;
-      padding: 5px 10px;
+      box-shadow: inset 0px 1px 0px 0px #f29c93;
+      background: linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+      background-color: #fe1a00;
+      border-radius: 15px;
+      border: 1px solid #d83526;
       cursor: pointer;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 6px 10px;
+      text-decoration: none;
+      text-shadow: 0px 1px 0px #b23e35;
+
+      &:hover {
+        background: linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+        background-color: #ce0100;
+      }
     }
   }
 }
@@ -114,10 +142,19 @@
   margin-top: 5px;
   padding: 5px;
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__remove:hover {
+    cursor: pointer;
+    color: red;
+  }
+
   &__author {
     font-size: 16px;
   }
-  &__line-break{
+  &__line-break {
     margin-top: 10px;
   }
 }

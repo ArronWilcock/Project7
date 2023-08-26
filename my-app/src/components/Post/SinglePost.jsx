@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { store } from "../../store";
 import axios from "axios";
 import "./Posts.scss";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function SinglePost() {
   const [post, setPost] = useState(null);
@@ -11,6 +11,7 @@ function SinglePost() {
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
   const { postId } = useParams();
+  const nav = useNavigate();
 
   const [refresh, setRefresh] = useState(false);
 
@@ -143,14 +144,35 @@ function SinglePost() {
       console.error(error);
     }
   };
+  const handleDeleteComment = (commentId) => {
+    axios
+      .delete(`http://localhost:3000/api/posts/${commentId}/comments`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log("Comment removed successfully:");
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        // Handle account deletion error
+        console.error("Comment deletion error:", error);
+      });
+  };
 
   return (
     <div className="post-list">
       {post && (
         <div className="post">
-          <h2 className="post__author">
-            {post.User.firstName} {post.User.lastName}
-          </h2>
+          <div className="post__header">
+            <h2 className="post__author">
+              {post.User.firstName} {post.User.lastName}
+            </h2>
+            <i
+              className="fa-solid fa-arrow-rotate-left post__back-btn"
+              onClick={() => nav(-1)}
+              aria-label="Return to previous page"
+            ></i>
+          </div>
           <p className="post__caption">{post.caption}</p>
           <div className="post__media--container">{renderMedia(post)}</div>
           <div className="post__footer">
@@ -159,6 +181,7 @@ function SinglePost() {
                 <i
                   className="fa-solid fa-thumbs-up post__like"
                   onClick={() => handleLike(post.id, post.usersLiked)}
+                  aria-label="like this post"
                 ></i>{" "}
                 {post.likes}
               </p>
@@ -166,6 +189,7 @@ function SinglePost() {
                 <i
                   className="fa-solid fa-thumbs-down post__dislike"
                   onClick={() => handleDislike(post.id, post.usersDisliked)}
+                  aria-label="dislike this post"
                 ></i>{" "}
                 {post.dislikes}
               </p>
@@ -193,9 +217,17 @@ function SinglePost() {
             <h3>Comments:</h3>
             {post.comments.map((comment) => (
               <div key={comment.id} className="comment">
-                <h2 className="comment__author">
-                  {comment.User.firstName} {comment.User.lastName} says...
-                </h2>
+                <div className="comment__header">
+                  <h2 className="comment__author">
+                    {comment.User.firstName} {comment.User.lastName} says...
+                  </h2>
+                  {userId === comment.UserId && (
+                    <i
+                      className="fa-solid fa-trash comment__remove"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    ></i>
+                  )}
+                </div>
                 <p className="comment__text">{comment.comment}</p>
                 <hr className="comment__line-break" />
               </div>
