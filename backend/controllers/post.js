@@ -113,7 +113,6 @@ exports.deletePost = async (req, res, next) => {
   }
 };
 
-
 exports.markPostAsRead = (req, res, next) => {
   let { postId, userId } = req.params; // Assuming postId and userId are passed as parameters in the request
 

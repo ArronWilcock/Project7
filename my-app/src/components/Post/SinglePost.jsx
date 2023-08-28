@@ -15,26 +15,25 @@ function SinglePost() {
 
   const [refresh, setRefresh] = useState(false);
 
-  const markPostAsRead = () => {
-    axios
-      .post(
-        `http://localhost:3000/api/posts/${postId}/mark-read/${userId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        console.log("Post marked as read");
-      })
-      .catch((error) => {
-        if (error.response.status !== 409) {
-          console.error("Error marking post as read:", error);
-        }
-      });
-  };
-
   useEffect(() => {
+    const markPostAsRead = () => {
+      axios
+        .post(
+          `http://localhost:3000/api/posts/${postId}/mark-read/${userId}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((response) => {
+          console.log("Post marked as read");
+        })
+        .catch((error) => {
+          if (error.response.status !== 409) {
+            console.error("Error marking post as read:", error);
+          }
+        });
+    };
     axios
       .get(`http://localhost:3000/api/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -62,7 +61,7 @@ function SinglePost() {
       .catch((error) => {
         console.error(error.message);
       });
-  }, [token, postId, refresh]); // Make sure to include dependencies if needed
+  }, [token, postId, userId, refresh]); // Make sure to include dependencies if needed
 
   const renderMedia = (post) => {
     if (post && post.imgUrl) {

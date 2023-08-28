@@ -41,7 +41,6 @@ exports.deleteComment = async (req, res, next) => {
   const commentId = parseInt(req.params.id, 10);
 
   try {
-    
     const comment = await Comment.findByPk(commentId);
 
     if (!comment) {

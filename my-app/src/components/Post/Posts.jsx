@@ -172,10 +172,14 @@ function PostList() {
             </div>
             <div className="post__isRead-container">
               {post.readByUsers.includes(`${userId}`) && (
-                <i
-                  className="fa-solid fa-eye post__isRead"
+                <span
+                  className="post__isRead"
+                  role="checkbox"
+                  aria-checked={post.readByUsers.includes(userId.toString())}
                   aria-label="Read by user"
-                ></i>
+                >
+                  <i className="fa-solid fa-eye" aria-hidden="true"></i>
+                </span>
               )}
             </div>
           </div>
