@@ -158,6 +158,12 @@ function SinglePost() {
         console.error("Comment deletion error:", error);
       });
   };
+  const isLikedByCurrentUser = (post) => {
+    return post.usersLiked && post.usersLiked.includes(userId.toString());
+  };
+  const isDislikedByCurrentUser = (post) => {
+    return post.usersDisliked && post.usersDisliked.includes(userId.toString());
+  };
 
   return (
     <div className="post-list">
@@ -179,7 +185,11 @@ function SinglePost() {
             <div className="post__likes-container">
               <p className="post__likes">
                 <i
-                  className="fa-solid fa-thumbs-up post__like"
+                  className={`fa-solid fa-thumbs-up ${
+                    isLikedByCurrentUser(post)
+                      ? "post__like--liked"
+                      : "post__like"
+                  }`}
                   onClick={() => handleLike(post.id, post.usersLiked)}
                   aria-label="like this post"
                 ></i>{" "}
@@ -187,7 +197,11 @@ function SinglePost() {
               </p>
               <p className="post__dislikes">
                 <i
-                  className="fa-solid fa-thumbs-down post__dislike"
+                  className={`fa-solid fa-thumbs-down ${
+                    isDislikedByCurrentUser(post)
+                      ? "post__dislike--disliked"
+                      : "post__dislike"
+                  }`}
                   onClick={() => handleDislike(post.id, post.usersDisliked)}
                   aria-label="dislike this post"
                 ></i>{" "}

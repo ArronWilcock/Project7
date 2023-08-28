@@ -81,6 +81,12 @@
   }
 
   &__like {
+    &:hover {
+      cursor: pointer;
+      scale: 1.2;
+    }
+  }
+  &__like--liked {
     color: green;
     &:hover {
       cursor: pointer;
@@ -89,6 +95,12 @@
   }
 
   &__dislike {
+    &:hover {
+      cursor: pointer;
+      scale: 1.2;
+    }
+  }
+  &__dislike--disliked {
     color: red;
     &:hover {
       cursor: pointer;
