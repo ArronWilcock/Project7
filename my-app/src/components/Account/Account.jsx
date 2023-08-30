@@ -8,7 +8,6 @@ import axios from "axios";
 
 function AccountPage() {
   const [posts, setPosts] = useState([]);
-  const [newComment, setNewComment] = useState("");
   const [totalCommentCounts, setTotalCommentCounts] = useState({});
   const [showSidebar, setShowSidebar] = useState(true);
   const { dispatch } = useContext(store);
@@ -141,26 +140,6 @@ function AccountPage() {
       }
     } else {
       return null; // No media file, return null
-    }
-  };
-
-  const handleCommentSubmit = async (postId) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/posts/${postId}/comment`,
-        {
-          comment: newComment,
-          userId: userId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.status === 201) {
-        setRefresh(!refresh);
-      }
-    } catch (error) {
-      console.error(error.error);
     }
   };
 
@@ -333,10 +312,12 @@ function AccountPage() {
                         ></i>{" "}
                         {post.dislikes}
                       </p>
-                      <p className="post__comments-count">
-                        <i className="fa-regular fa-comment"></i>{" "}
-                        {totalCommentCounts[post.id] || 0}
-                      </p>
+                      <Link to={`/${post.id}`}>
+                        <p className="post__comments-count">
+                          <i className="fa-regular fa-comment"></i>{" "}
+                          {totalCommentCounts[post.id] || 0}
+                        </p>
+                      </Link>
                     </div>
                     <div className="post__isRead-container">
                       {post.readByUsers.includes(userId) && (
@@ -345,34 +326,6 @@ function AccountPage() {
                         </p>
                       )}
                     </div>
-                  </div>
-
-                  <div className="post__comments">
-                    <div className="post__comment-form">
-                      <input
-                        className="post__comment-form--input"
-                        placeholder="say what you're thinking ..."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                      />
-                      <button
-                        className="post__comment-form--btn"
-                        onClick={() => handleCommentSubmit(post.id)}
-                      >
-                        Post
-                      </button>
-                    </div>
-                    <h3>Comments:</h3>
-                    {post.comments.map((comment) => (
-                      <div key={comment.id} className="comment">
-                        <h2 className="comment__author">
-                          {comment.User.firstName} {comment.User.lastName}{" "}
-                          says...
-                        </h2>
-                        <p className="comment__text">{comment.comment}</p>
-                        <hr className="comment__line-break" />
-                      </div>
-                    ))}
                   </div>
                 </div>
               ))}
