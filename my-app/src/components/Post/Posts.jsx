@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
-import { store } from "../../store";
-import axios from "axios";
+// Importing necessary modules and styles
+import React, { useState, useEffect, useContext } from "react"; // Importing React, useState, useEffect, and useContext
+import { store } from "../../store"; // Importing store from the application's store
+import axios from "axios"; // Importing axios for making HTTP requests
 import "./Posts.scss";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Importing Link from react-router-dom
 
+// Defining the PostList component
 function PostList() {
-  const [posts, setPosts] = useState([]);
-  const [totalCommentCounts, setTotalCommentCounts] = useState({});
+  // Setting up state variables using useState hook
+  const [posts, setPosts] = useState([]); // State for storing posts
+  const [totalCommentCounts, setTotalCommentCounts] = useState({}); // State for storing total comment counts
 
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false); // State for refreshing the posts
 
+  // Getting token and userId from the global context store
   const token = useContext(store).state.userInfo.token;
   const userId = useContext(store).state.userInfo.userId;
 
+  // Fetching posts and comments on component mount and when refresh state changes
   useEffect(() => {
     axios
       .get("http://localhost:3000/api/posts", {
@@ -21,6 +26,7 @@ function PostList() {
       .then(async (response) => {
         const data = response.data;
 
+        // Fetching comments for each post in parallel using Promise.all
         const postsWithComments = await Promise.all(
           data.posts.map(async (post) => {
             const commentResponse = await axios.get(
@@ -44,13 +50,14 @@ function PostList() {
           })
         );
 
-        setPosts(postsWithComments);
+        setPosts(postsWithComments); // Update the posts state with comments
       })
       .catch((error) => {
         console.error(error.message);
       });
   }, [token, refresh]);
 
+  // Rendering media based on the type of content (image, video, audio)
   const renderMedia = (post) => {
     if (post.imgUrl) {
       if (post.imgUrl.endsWith(".mp3")) {
@@ -64,17 +71,21 @@ function PostList() {
       return null; // No media file, return null
     }
   };
+
+  // Handling like for a post
   const handleLike = async (postId, usersLiked) => {
     const isLiked = usersLiked.includes(userId.toString());
     const likeValue = isLiked ? 0 : 1;
 
     try {
+      // Sending a POST request to like or unlike a post
       const response = await axios.post(
         `http://localhost:3000/api/posts/${postId}/like/${userId}`,
         { like: likeValue },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log(response.data);
+
+      // Updating posts state and refreshing
       const updatedPosts = posts.map((post) =>
         post.id === postId
           ? {
@@ -85,23 +96,27 @@ function PostList() {
           : post
       );
 
-      setPosts(updatedPosts);
-      setRefresh(!refresh);
+      setPosts(updatedPosts); // Update the posts state
+      setRefresh(!refresh); // Toggle the refresh state
     } catch (error) {
       console.error(error.message);
     }
   };
+
+  // Handling dislike for a post
   const handleDislike = async (postId, usersDisliked) => {
     const isDisliked = usersDisliked.includes(userId.toString());
     const likeValue = isDisliked ? 0 : -1;
 
     try {
+      // Sending a POST request to dislike or undislike a post
       const response = await axios.post(
         `http://localhost:3000/api/posts/${postId}/like/${userId}`,
         { like: likeValue },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log(response.data);
+
+      // Updating posts state and refreshing
       const updatedPosts = posts.map((post) =>
         post.id === postId
           ? {
@@ -112,20 +127,24 @@ function PostList() {
           : post
       );
 
-      setPosts(updatedPosts);
-      setRefresh(!refresh);
+      setPosts(updatedPosts); // Update the posts state
+      setRefresh(!refresh); // Toggle the refresh state
     } catch (error) {
       console.error(error.message);
     }
   };
 
+  // Checking if the post is liked by the current user
   const isLikedByCurrentUser = (post) => {
     return post.usersLiked && post.usersLiked.includes(userId.toString());
   };
+
+  // Checking if the post is disliked by the current user
   const isDislikedByCurrentUser = (post) => {
     return post.usersDisliked && post.usersDisliked.includes(userId.toString());
   };
 
+  // Rendering the list of posts
   return (
     <div className="post-list">
       {posts.map((post) => (
@@ -135,11 +154,11 @@ function PostList() {
           </h2>
           <Link to={`/${post.id}`} className="post__tag">
             <p className="post__caption">{post.caption}</p>
-
             <div className="post__media--container">{renderMedia(post)}</div>
           </Link>
           <div className="post__footer">
             <div className="post__likes-container">
+              {/* Like button */}
               <p className="post__likes">
                 <i
                   className={`fa-solid fa-thumbs-up ${
@@ -152,6 +171,7 @@ function PostList() {
                 {post.likes}
               </p>
 
+              {/* Dislike button */}
               <p className="post__dislikes">
                 <i
                   className={`fa-solid fa-thumbs-down ${
@@ -163,13 +183,16 @@ function PostList() {
                 ></i>{" "}
                 {post.dislikes}
               </p>
-              <Link to={`/${post.id}`}>
+
+              {/* Link to view comments */}
+              <Link to={`/${post.id}`} className="post__comments-count">
                 <p className="post__comments-count">
                   <i className="fa-regular fa-comment"></i>{" "}
                   {totalCommentCounts[post.id] || 0}
                 </p>
               </Link>
             </div>
+            {/* Indicator if the post has been read by the user */}
             <div className="post__isRead-container">
               {post.readByUsers.includes(`${userId}`) && (
                 <span

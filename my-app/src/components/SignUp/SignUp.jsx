@@ -1,57 +1,65 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { store, actions } from "../../store";
+// Importing necessary modules and styles
+import React, { useState, useContext } from "react"; // Importing React, useState, and useContext
+import { useNavigate } from "react-router-dom"; // Importing useNavigate for navigation
+import axios from "axios"; // Importing axios for making HTTP requests
+import { store, actions } from "../../store"; // Importing store and actions from the application's store
 import "./SignUp.scss";
-
+// Regular expressions for validation
 const validName = new RegExp(/^([^0-9]*)$/g);
 const validEmail = new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/g);
 const validPassword = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/); // At least 8 characters, including letters and numbers
 
 function SignUpForm() {
+  // Setting up state variables using useState hook
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const navigate = useNavigate();
-  const { dispatch } = useContext(store);
+  const navigate = useNavigate(); // Using the useNavigate hook for navigation
+  const { dispatch } = useContext(store); // Using the dispatch function from the global context store
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // Handling changes for first name input
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
     validateFirstName(event.target.value);
     updateFormCompletion();
   };
 
+  // Handling changes for last name input
   const handleLastNameChange = (event) => {
     setLastName(event.target.value);
     validateLastName(event.target.value);
     updateFormCompletion();
   };
 
+  // Handling changes for email input
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
     validateEmail(event.target.value);
     updateFormCompletion();
   };
 
+  // Handling changes for password input
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
     validatePassword(event.target.value);
     updateFormCompletion();
   };
 
+  // Updating the form completion status
   const updateFormCompletion = () => {
     setIsFormComplete(
       (prevState) => email !== "" && password !== "" && !prevState.passwordError
     );
   };
 
+  // Validating first name
   const validateFirstName = (value) => {
     if (value === "") {
       setFirstNameError("Required field");
@@ -62,6 +70,7 @@ function SignUpForm() {
     }
   };
 
+  // Validating last name
   const validateLastName = (value) => {
     if (value === "") {
       setLastNameError("Required field");
@@ -72,6 +81,7 @@ function SignUpForm() {
     }
   };
 
+  // Validating email
   const validateEmail = (value) => {
     if (value === "") {
       setEmailError("Required field");
@@ -82,6 +92,7 @@ function SignUpForm() {
     }
   };
 
+  // Validating password
   const validatePassword = (value) => {
     if (value === "") {
       setPasswordError("Required field");
@@ -98,6 +109,7 @@ function SignUpForm() {
     }
   };
 
+  // Handling form submission
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -111,6 +123,7 @@ function SignUpForm() {
       return; // Don't proceed with submission if validation fails
     }
 
+    // Creating form data
     const formData = {
       firstName: firstName,
       lastName: lastName,
@@ -118,6 +131,7 @@ function SignUpForm() {
       password: password,
     };
 
+    // Sending a POST request to sign up
     axios
       .post("http://localhost:3000/api/auth/signup", formData)
       .then((response) => {
@@ -136,6 +150,7 @@ function SignUpForm() {
       });
   };
 
+  // Rendering the component
   return (
     <form className="signup-form" onSubmit={handleSubmit}>
       <input

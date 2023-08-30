@@ -1,20 +1,23 @@
+// Importing necessary modules, components, and styles
 import React, { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { store, actions } from "../../store";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Importing useNavigate for navigation and Link for linking to post details
+import { store, actions } from "../../store"; // Importing store and actions from the application's store
 import "./Account.scss";
 import "../Post/Posts.scss";
-import axios from "axios";
+import axios from "axios"; // Importing axios for making HTTP requests
 
 function AccountPage() {
-  const [posts, setPosts] = useState([]);
-  const [totalCommentCounts, setTotalCommentCounts] = useState({});
-  const [showSidebar, setShowSidebar] = useState(true);
-  const { dispatch } = useContext(store);
-  const navigate = useNavigate();
-  const userId = useContext(store).state.userInfo.userId;
-  const token = useContext(store).state.userInfo.token;
-  const [refresh, setRefresh] = useState(false);
+  // Setting up state variables using useState hook
+  const [posts, setPosts] = useState([]); // Posts to display
+  const [totalCommentCounts, setTotalCommentCounts] = useState({}); // Total comment counts for each post
+  const [showSidebar, setShowSidebar] = useState(true); // Sidebar visibility
+  const { dispatch } = useContext(store); // Using the dispatch function from the global context store
+  const navigate = useNavigate(); // Using the useNavigate hook for navigation
+  const userId = useContext(store).state.userInfo.userId; // Getting user ID from context
+  const token = useContext(store).state.userInfo.token; // Getting user token from context
+  const [refresh, setRefresh] = useState(false); // State for triggering data refresh
+
+  // Function to show a specific main content container
   function showMainContainer(id) {
     // Hide all main content containers
     let mainContainers = document.getElementsByClassName("main-content");
@@ -25,10 +28,13 @@ function AccountPage() {
     let mainContainer = document.getElementById(id);
     mainContainer.style.display = "flex";
   }
+
+  // Function to toggle the sidebar visibility
   function toggleSidebar() {
     setShowSidebar(!showSidebar);
   }
 
+  // Handling logout
   const handleLogout = () => {
     // Display a confirmation dialog before proceeding
     const confirmLogout = window.confirm("Are you sure you want to logout?");
@@ -37,11 +43,12 @@ function AccountPage() {
       dispatch({ type: actions.SET_USER_INFO, value: null });
       dispatch({ type: actions.SET_LOGIN_STATE, value: false });
 
-      // Navigate to the login or home page (whichever is appropriate for your app)
-      navigate("/login"); // Replace "/login" with your desired route
+      // Navigate to the login page
+      navigate("/login");
     }
   };
 
+  // Handling account deletion
   const handleDeleteAccount = (event) => {
     event.preventDefault();
 
@@ -58,7 +65,7 @@ function AccountPage() {
         .then((response) => {
           console.log("Account removed successfully:");
           dispatch({ type: actions.SET_LOGIN_STATE, value: true });
-          navigate("/login");
+          navigate("/login"); // Navigate to the login page
         })
         .catch((error) => {
           // Handle account deletion error
@@ -69,6 +76,7 @@ function AccountPage() {
     }
   };
 
+  // Handling post deletion
   const handleDeletePost = (postId) => {
     // Display a confirmation dialog before proceeding
     const confirmDelete = window.confirm(
@@ -82,16 +90,17 @@ function AccountPage() {
         })
         .then((response) => {
           console.log("Post removed successfully:");
-          setRefresh(!refresh);
+          setRefresh(!refresh); // Trigger data refresh
         })
         .catch((error) => {
-          // Handle account deletion error
+          // Handle post deletion error
           console.error("Post deletion error:", error);
         });
     } else {
       console.log("Post deletion was cancelled.");
     }
   };
+
   useEffect(() => {
     // Fetch posts and comments
     axios
@@ -122,13 +131,14 @@ function AccountPage() {
         );
         setPosts(postsWithComments);
 
-        showMainContainer("myposts");
+        showMainContainer("myposts"); // Show the "myposts" main content container
       })
       .catch((error) => {
         console.error(error.message);
       });
-  }, [userId, token, refresh]);
+  }, [userId, token, refresh]); // Effect runs when userId, token, or refresh changes
 
+  // Function to render media content
   const renderMedia = (post) => {
     if (post.imgUrl) {
       if (post.imgUrl.endsWith(".mp3")) {
@@ -143,7 +153,9 @@ function AccountPage() {
     }
   };
 
+  // Handling post like
   const handleLike = async (postId, usersLiked) => {
+    // Checking if the current user has liked the post
     const isLiked = usersLiked.includes(userId.toString());
     const likeValue = isLiked ? 0 : 1;
 
@@ -165,12 +177,15 @@ function AccountPage() {
       );
 
       setPosts(updatedPosts);
-      setRefresh(!refresh);
+      setRefresh(!refresh); // Trigger data refresh
     } catch (error) {
       console.error(error.message);
     }
   };
+
+  // Handling post dislike
   const handleDislike = async (postId, usersDisliked) => {
+    // Checking if the current user has disliked the post
     const isDisliked = usersDisliked.includes(userId.toString());
     const likeValue = isDisliked ? 0 : -1;
 
@@ -192,21 +207,26 @@ function AccountPage() {
       );
 
       setPosts(updatedPosts);
-      setRefresh(!refresh);
+      setRefresh(!refresh); // Trigger data refresh
     } catch (error) {
       console.error(error.message);
     }
   };
 
+  // Checking if the post is liked by the current user
   const isLikedByCurrentUser = (post) => {
     return post.usersLiked && post.usersLiked.includes(userId.toString());
   };
+
+  // Checking if the post is disliked by the current user
   const isDislikedByCurrentUser = (post) => {
     return post.usersDisliked && post.usersDisliked.includes(userId.toString());
   };
 
+  // Rendering the component's JSX
   return (
     <div className="account-page">
+      {/* Mobile sidebar */}
       <div id="mobile-dropdown" className="sidebar">
         <button aria-label="sidebar toggle" onClick={toggleSidebar}>
           <i className="fa-solid fa-caret-down"></i>
@@ -235,6 +255,7 @@ function AccountPage() {
           </li>
         </ul>
       </div>
+      {/* Desktop sidebar */}
       <div id="desktop-sidebar" className="sidebar">
         <ul>
           <li>
@@ -260,16 +281,21 @@ function AccountPage() {
           </li>
         </ul>
       </div>
+      {/* Main content */}
       <div className="main-container">
+        {/* My Posts */}
         <div id="myposts" className="main-content">
+          {/* Display message if user has no posts */}
           {posts.length === 0 ? (
             <div className="no-posts-message">
               <h1>User has no posts</h1>
             </div>
           ) : (
+            // Display list of user's posts
             <div className="post-list">
               {posts.map((post) => (
                 <div className="post" key={post.id}>
+                  {/* Post header */}
                   <div className="post__header">
                     <h2 className="post__author">
                       {post.User.firstName} {post.User.lastName}
@@ -279,14 +305,16 @@ function AccountPage() {
                       onClick={() => handleDeletePost(post.id)}
                     ></i>
                   </div>
+                  {/* Link to post details */}
                   <Link to={`/${post.id}`} className="post__tag">
                     <p className="post__caption">{post.caption}</p>
-
                     <div className="post__media--container">
-                      {renderMedia(post)}
+                      {renderMedia(post)} {/* Render media content */}
                     </div>
                   </Link>
+                  {/* Post footer */}
                   <div className="post__footer">
+                    {/* Likes, dislikes, and comments */}
                     <div className="post__likes-container">
                       <p className="post__likes">
                         <i
@@ -319,6 +347,7 @@ function AccountPage() {
                         </p>
                       </Link>
                     </div>
+                    {/* Read status */}
                     <div className="post__isRead-container">
                       {post.readByUsers.includes(userId) && (
                         <p className="post__isRead">
@@ -333,6 +362,7 @@ function AccountPage() {
           )}
         </div>
 
+        {/* Delete Account */}
         <div id="delete-account" className="main-content">
           <h2 className="delete-account__title">
             Are you sure you want to delete your account?
@@ -340,7 +370,6 @@ function AccountPage() {
           <p className="delete-account__warning">
             All of your posts and comments will be permanently deleted
           </p>
-
           <button
             type="submit"
             className="delete-account__btn"

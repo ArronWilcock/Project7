@@ -1,21 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
-import { store } from "../../store";
-import axios from "axios";
+// Importing necessary modules and styles
+import React, { useState, useEffect, useContext } from "react"; // Importing React, useState, useEffect, and useContext
+import { store } from "../../store"; // Importing store from the application's store
+import axios from "axios"; // Importing axios for making HTTP requests
 import "./Posts.scss";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Importing useParams and useNavigate from react-router-dom
 
 function SinglePost() {
+  // Setting up state variables using useState hook
   const [post, setPost] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [totalCommentCounts, setTotalCommentCounts] = useState({});
-  const token = useContext(store).state.userInfo.token;
-  const userId = useContext(store).state.userInfo.userId;
-  const { postId } = useParams();
+  const token = useContext(store).state.userInfo.token; // Getting token from the global context store
+  const userId = useContext(store).state.userInfo.userId; // Getting userId from the global context store
+  const { postId } = useParams(); // Getting postId from the URL parameters
   const nav = useNavigate();
 
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false); // State for refreshing the component
 
   useEffect(() => {
+    // Function to mark the post as read
     const markPostAsRead = () => {
       axios
         .post(
@@ -34,6 +37,7 @@ function SinglePost() {
           }
         });
     };
+    // Fetching the single post and its comments
     axios
       .get(`http://localhost:3000/api/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -55,14 +59,15 @@ function SinglePost() {
           ...prevCounts,
           [postId]: totalCommentCount,
         }));
-        setPost(postWithComments);
+        setPost(postWithComments); // Update the post state
         markPostAsRead();
       })
       .catch((error) => {
         console.error(error.message);
       });
-  }, [token, postId, userId, refresh]); // Make sure to include dependencies if needed
+  }, [token, postId, userId, refresh]); // Use effect dependencies
 
+  // Rendering media based on the type of content (image, video, audio)
   const renderMedia = (post) => {
     if (post && post.imgUrl) {
       if (post.imgUrl.endsWith(".mp3")) {
@@ -77,10 +82,12 @@ function SinglePost() {
     }
   };
 
+  // Handling like for a post
   const handleLike = async (postId, usersLiked) => {
     const isLiked = usersLiked.includes(userId.toString());
     const likeValue = isLiked ? 0 : 1;
     try {
+      // Sending a POST request to like or unlike a post
       const response = await axios.post(
         `http://localhost:3000/api/posts/${postId}/like/${userId}`,
         { like: likeValue },
@@ -94,7 +101,7 @@ function SinglePost() {
         likes: response.data.likes,
         usersLiked: response.data.usersLiked,
       }));
-      setRefresh(!refresh);
+      setRefresh(!refresh); // Toggle the refresh state
     } catch (error) {
       console.error(error.message);
     }
@@ -105,6 +112,7 @@ function SinglePost() {
     const isDisliked = usersDisliked.includes(userId.toString());
     const likeValue = isDisliked ? 0 : -1;
     try {
+      // Sending a POST request to dislike or undislike a post
       const response = await axios.post(
         `http://localhost:3000/api/posts/${postId}/like/${userId}`,
         { like: likeValue },
@@ -124,6 +132,7 @@ function SinglePost() {
     }
   };
 
+  // Handling comment submission
   const handleCommentSubmit = async (postId) => {
     try {
       const response = await axios.post(
@@ -137,12 +146,15 @@ function SinglePost() {
         }
       );
       if (response.status === 201) {
+        setNewComment("");
         setRefresh(!refresh);
       }
     } catch (error) {
       console.error(error);
     }
   };
+
+  // Handling comment deletion
   const handleDeleteComment = (commentId) => {
     axios
       .delete(`http://localhost:3000/api/posts/${commentId}/comments`, {
@@ -153,17 +165,22 @@ function SinglePost() {
         setRefresh(!refresh);
       })
       .catch((error) => {
-        // Handle account deletion error
+        // Handle comment deletion error
         console.error("Comment deletion error:", error);
       });
   };
+
+  // Checking if the post is liked by the current user
   const isLikedByCurrentUser = (post) => {
     return post.usersLiked && post.usersLiked.includes(userId.toString());
   };
+
+  // Checking if the post is disliked by the current user
   const isDislikedByCurrentUser = (post) => {
     return post.usersDisliked && post.usersDisliked.includes(userId.toString());
   };
 
+  // Rendering the component
   return (
     <div className="post-list">
       {post && (
@@ -174,7 +191,7 @@ function SinglePost() {
             </h2>
             <i
               className="fa-solid fa-arrow-rotate-left post__back-btn"
-              onClick={() => nav(-1)}
+              onClick={() => nav(-1)} // Navigating back
               aria-label="Return to previous page"
             ></i>
           </div>
@@ -213,6 +230,7 @@ function SinglePost() {
             </div>
           </div>
           <div className="post__comments">
+            {/* Comment submission form */}
             <div className="post__comment-form">
               <input
                 className="post__comment-form--input"
@@ -228,6 +246,7 @@ function SinglePost() {
               </button>
             </div>
             <h3>Comments:</h3>
+            {/* Mapping through and displaying comments */}
             {post.comments.map((comment) => (
               <div key={comment.id} className="comment">
                 <div className="comment__header">
@@ -252,4 +271,4 @@ function SinglePost() {
   );
 }
 
-export default SinglePost;
+export default SinglePost; // Exporting the SinglePost component
