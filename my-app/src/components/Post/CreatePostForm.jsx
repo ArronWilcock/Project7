@@ -46,7 +46,7 @@ function CreatePostForm() {
 
   // Updating the form completion status
   const updateFormCompletion = () => {
-    setIsFormComplete(caption !== "" && mediaFile !== null); // Form is complete if caption and media are filled
+    setIsFormComplete(caption !== "" || mediaFile !== null); // Form is complete if caption and media are filled
   };
 
   // Handling form submission
